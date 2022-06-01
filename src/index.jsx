@@ -1,7 +1,7 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
 
-import "@/styles/styles"
+import "@gid/styles/styles"
 
 const App = () => (
   <div className="container">
