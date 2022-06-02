@@ -22,8 +22,8 @@ class TodoInput extends React.Component {
   }
 
   handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      this.props.addItem(event.target.value);
+    if (event.key === "Enter" && event.target.value.trim()) {
+      this.props.addItem(event.target.value.trim());
     }
   }
 

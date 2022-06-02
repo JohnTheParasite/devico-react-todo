@@ -1,0 +1,27 @@
+.footer {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  padding: 10px 15px;
+  color: rgb(119, 119, 119);
+  font-size: 14px;
+
+  .items-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .remove-all-done {
+    cursor: pointer;
+    text-align: right;
+    margin: 3px;
+    padding: 3px 0 3px 7px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.hidden {
+  display: none;
+}
