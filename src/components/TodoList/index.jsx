@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles"
+import styles from "./styles.module"
 import TodoInput from "@/components/TodoInput";
 import TodoItem from "@/components/TodoItem";
 import TodoFooter from "@/components/todoFooter";
@@ -12,7 +12,7 @@ class TodoList extends React.Component {
       itemId: 1,
       newInputLabel: "",
       filter: "All",
-      list: []
+      list: [],
     }
   }
 
@@ -107,8 +107,6 @@ class TodoList extends React.Component {
     this.setState({ filter: filter} );
   }
 
-  // TODO: add localStorage
-
   render() {
     const listLength = this.state.list.length
     const doneListLength = this.state.list.filter((el) => el.done).length
@@ -132,7 +130,7 @@ class TodoList extends React.Component {
     );
 
     return (
-      <div className="list-container">
+      <div className={styles["list-container"]}>
         <TodoInput
           inputValue={this.state.newInputLabel}
           listLength={listLength}

@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles"
+import styles from "./styles.module"
 
 class TodoItem extends React.Component {
 
@@ -9,6 +9,12 @@ class TodoItem extends React.Component {
     this.inputEdit = React.createRef();
     this.state = {
       edit: false
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.edit !== this.state.edit && this.state.edit) {
+      this.inputEdit.current.focus();
     }
   }
 
@@ -41,10 +47,7 @@ class TodoItem extends React.Component {
 
   toggleEdit = () => {
     const newEditState = !this.state.edit;
-    this.setState({ edit: newEditState })
-    if (newEditState) {
-      this.inputEdit.current.focus();
-    }
+    this.setState({ edit: newEditState } )
   }
 
   removeTodo = () => {
@@ -52,26 +55,26 @@ class TodoItem extends React.Component {
   }
 
   render() {
-    const previewClasses = "preview" + (this.state.edit ? " hidden" : "");
-    const editInputClasses = "edit" + (this.state.edit ? "" : " hidden");
-    const listItemClasses = "list-item" + (this.props.done ? " done" : "");
+    const previewClasses = `${styles.preview} ${(this.state.edit ? styles.hidden : "")}`;
+    const editInputClasses = `${styles.edit} ${(!this.state.edit ? styles.hidden : "")}`;
+    const listItemClasses = `${styles['list-item']} ${(this.props.done ? styles.done : "")}`;
 
     return (
       <li className={listItemClasses}>
         <div className={previewClasses}>
           <input
             type="checkbox"
-            className="checkbox"
+            className={styles.checkbox}
             value={this.props.done}
             checked={this.props.done}
             onChange={this.toggleDone}
           />
           <p
-            className="paragraph"
+            className={styles.paragraph}
             onDoubleClick={this.toggleEdit}
           >{this.props.content}</p>
           <div
-            className="remove"
+            className={styles.remove}
             onClick={this.removeTodo}
           >×</div>
         </div>

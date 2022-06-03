@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles"
+import styles from "./styles.module"
 import TodoFilters from "@/components/todoFilters";
 
 class TodoFooter extends React.Component {
@@ -8,12 +8,12 @@ class TodoFooter extends React.Component {
   }
 
   render() {
-    const footerClasses = "footer" + (this.props.itemsLength ? "" : " hidden");
-    const removeDoneClasses = "remove-all-done" + (this.props.itemsDone ? "" : " hidden");
+    const footerClasses = `${styles.footer} ${(this.props.itemsLength ? "" : styles.hidden)}`
+    const removeDoneClasses = `${styles["remove-all-done"]} ${(this.props.itemsDone ? "" : styles.hidden)}`;
 
     return (
       <div className={footerClasses}>
-        <div className="items-left">
+        <div className={styles["items-left"]}>
           {this.props.itemsLeft} items left
         </div>
         <TodoFilters

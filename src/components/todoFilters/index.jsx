@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles"
+import styles from "./styles.module"
 
 class TodoFilters extends React.Component {
   constructor(props) {
@@ -11,12 +11,12 @@ class TodoFilters extends React.Component {
   }
 
   render() {
-    const filterAllClasses = "filter" + (this.props.filter === "All" ? " active" : "");
-    const filterActiveClasses = "filter" + (this.props.filter === "Active" ? " active" : "");
-    const filterCompletedClasses = "filter" + (this.props.filter === "Completed" ? " active" : "");
+    const filterAllClasses = `${styles.filter} ${this.props.filter === "All" ? styles.active : ""}`
+    const filterActiveClasses = `${styles.filter} ${this.props.filter === "Active" ? styles.active : ""}`
+    const filterCompletedClasses = `${styles.filter} ${this.props.filter === "Completed" ? styles.active : ""}`
 
     return (
-      <div className="filters">
+      <div className={styles.filters}>
         <div
           className={filterAllClasses}
           onClick={this.handleClick}

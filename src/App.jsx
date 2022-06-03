@@ -4,9 +4,7 @@ import Todo from "@/pages/Todo";
 class App extends React.Component {
   render() {
     return (
-      <div className="app">
-        <Todo />
-      </div>
+      <Todo />
     )
   }
 }

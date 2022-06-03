@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles"
+import styles from "./styles.module"
 
 class TodoInput extends React.Component {
 
@@ -8,13 +8,13 @@ class TodoInput extends React.Component {
   }
 
   getAdditionalArrowClass = () => {
-    let className = "arrow";
+    let classes = styles.arrow;
     if (this.props.listLength === 0) {
-      className += " invisible";
+      classes = `${styles.arrow} ${styles.invisible}`;
     } else if (this.props.listLength === this.props.doneListLength) {
-      className += " darker"
+      classes = `${styles.arrow} ${styles.darker}`;
     }
-    return className;
+    return classes;
   }
 
   handleChange = (event) => {
@@ -32,14 +32,14 @@ class TodoInput extends React.Component {
     const arrowClasses = this.getAdditionalArrowClass();
 
     return (
-      <div className="input">
+      <div className={styles.input}>
         <div
           className={arrowClasses}
           onClick={this.props.arrowClick}
         />
         <input
           name="newItemLabel"
-          className="add-input"
+          className={styles["add-input"]}
           type="text"
           placeholder="What needs to be done?"
           value={inputValue}
