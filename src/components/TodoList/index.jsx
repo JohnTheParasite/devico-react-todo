@@ -16,8 +16,23 @@ class TodoList extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    const storageData = window.localStorage.getItem("todoItems");
+    const result = (storageData === null) ? [] : JSON.parse(storageData);
+    let itemId = 1;
+    if (result.length) {
+      itemId = Math.max(...result.map(el => el.id)) + 1;
+    }
+
+    this.setState({ list: result, itemId: itemId } )
+  }
+
   handleChange = (value) => {
-    this.setState({ newInputLabel: value })
+    this.setState({ newInputLabel: value } )
   }
 
   toggleAllItems = () => {
@@ -28,7 +43,8 @@ class TodoList extends React.Component {
 
     changedList.forEach((el) => { el.done = done })
 
-    this.setState({ list: changedList });
+    this.setState({ list: changedList } );
+    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
   }
 
   addNewItem = (content) => {
@@ -45,6 +61,7 @@ class TodoList extends React.Component {
       newInputLabel: "",
       list: changedList
     })
+    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
   }
 
   toggleItemDone = (id) => {
@@ -55,6 +72,7 @@ class TodoList extends React.Component {
     }
 
     this.setState( { list: changedList } )
+    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
   }
 
   changeContent = (id, value) => {
@@ -65,6 +83,7 @@ class TodoList extends React.Component {
     }
 
     this.setState( { list: changedList } )
+    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
   }
 
   removeItem = (id) => {
@@ -75,29 +94,32 @@ class TodoList extends React.Component {
     }
 
     this.setState( { list: changedList } )
+    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
   }
 
   removeDoneTodos = () => {
     const changedList = this.state.list.filter((el) => !el.done);
     this.setState( { list: changedList } )
+    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
   }
 
   changeFilter = (filter) => {
-    this.setState({ filter: filter});
+    this.setState({ filter: filter} );
   }
 
-  // TODO: done todo should be txt-crossed and grey colored
-  // TODO: Make filters do something
   // TODO: add localStorage
-  // TODO: resolve focus() problem
-  // TODO: read about how to pass properties through multiple children
 
   render() {
     const listLength = this.state.list.length
     const doneListLength = this.state.list.filter((el) => el.done).length
     const itemLeft = listLength - doneListLength;
 
-    const listItems = this.state.list.map((el) =>
+    let listToRender = this.state.list;
+    if (this.state.filter !== "All") {
+      listToRender = listToRender.filter((el) => this.state.filter === "Active" ? !el.done : el.done)
+    }
+
+    const listItems = listToRender.map((el) =>
       <TodoItem
         key={el.id}
         id={el.id}

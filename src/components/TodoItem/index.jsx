@@ -54,9 +54,10 @@ class TodoItem extends React.Component {
   render() {
     const previewClasses = "preview" + (this.state.edit ? " hidden" : "");
     const editInputClasses = "edit" + (this.state.edit ? "" : " hidden");
+    const listItemClasses = "list-item" + (this.props.done ? " done" : "");
 
     return (
-      <li className="list-item">
+      <li className={listItemClasses}>
         <div className={previewClasses}>
           <input
             type="checkbox"
