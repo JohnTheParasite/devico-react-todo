@@ -1,7 +1,7 @@
-import React from "react";
-import styles from "./styles.module";
-import TodoList from "@/components/TodoList";
-import logo from "@/../public/logo.svg"
+import React from 'react'
+import TodoList from '@/components/TodoList'
+import logo from '@/../public/logo.svg'
+import styles from './styles.module.scss'
 
 class Todo extends React.Component {
   render() {

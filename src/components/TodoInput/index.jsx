@@ -1,45 +1,41 @@
-import React from "react";
-import styles from "./styles.module"
+import React from 'react'
+import styles from './styles.module.scss'
 
 class TodoInput extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
-
   getAdditionalArrowClass = () => {
-    let classes = styles.arrow;
-    if (this.props.listLength === 0) {
-      classes = `${styles.arrow} ${styles.invisible}`;
-    } else if (this.props.listLength === this.props.doneListLength) {
-      classes = `${styles.arrow} ${styles.darker}`;
+    const { listLength, doneListLength } = this.props
+
+    let classes = styles.arrow
+    if (listLength === 0) {
+      classes = `${styles.arrow} ${styles.invisible}`
+    } else if (listLength === doneListLength) {
+      classes = `${styles.arrow} ${styles.darker}`
     }
-    return classes;
+    return classes
   }
 
   handleChange = (event) => {
-    this.props.onNewInputChange(event.target.value);
+    const { onNewInputChange } = this.props
+    onNewInputChange(event.target.value)
   }
 
   handleKeyDown = (event) => {
-    if (event.key === "Enter" && event.target.value.trim()) {
-      this.props.addItem(event.target.value.trim());
+    const { addItem } = this.props
+    if (event.key === 'Enter' && event.target.value.trim()) {
+      addItem(event.target.value.trim())
     }
   }
 
   render() {
-    const inputValue = this.props.inputValue;
-    const arrowClasses = this.getAdditionalArrowClass();
+    const { inputValue, arrowClick } = this.props
+    const arrowClasses = this.getAdditionalArrowClass()
 
     return (
       <div className={styles.input}>
-        <div
-          className={arrowClasses}
-          onClick={this.props.arrowClick}
-        />
+        <div className={arrowClasses} onClick={arrowClick} role="button" tabIndex={0} />
         <input
           name="newItemLabel"
-          className={styles["add-input"]}
+          className={styles['add-input']}
           type="text"
           placeholder="What needs to be done?"
           value={inputValue}
@@ -47,8 +43,8 @@ class TodoInput extends React.Component {
           onKeyDown={this.handleKeyDown}
         />
       </div>
-    );
+    )
   }
 }
 
-export default TodoInput;
+export default TodoInput

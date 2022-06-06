@@ -1,123 +1,131 @@
-import React from "react";
-import styles from "./styles.module"
-import TodoInput from "@/components/TodoInput";
-import TodoItem from "@/components/TodoItem";
-import TodoFooter from "@/components/todoFooter";
+import React from 'react'
+import TodoInput from '@/components/TodoInput'
+import TodoItem from '@/components/TodoItem'
+import TodoFooter from '@/components/todoFooter'
+import styles from './styles.module.scss'
 
 class TodoList extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       itemId: 1,
-      newInputLabel: "",
-      filter: "All",
+      newInputLabel: '',
+      filter: 'All',
       list: [],
     }
   }
 
   componentDidMount() {
-    this.getData();
+    this.getData()
   }
 
   getData = () => {
-    const storageData = window.localStorage.getItem("todoItems");
-    const result = (storageData === null) ? [] : JSON.parse(storageData);
-    let itemId = 1;
+    const storageData = window.localStorage.getItem('todoItems')
+    const result = storageData === null ? [] : JSON.parse(storageData)
+    let itemId = 1
     if (result.length) {
-      itemId = Math.max(...result.map(el => el.id)) + 1;
+      itemId = Math.max(...result.map((el) => el.id)) + 1
     }
 
-    this.setState({ list: result, itemId: itemId } )
+    this.setState({ list: result, itemId })
   }
 
   handleChange = (value) => {
-    this.setState({ newInputLabel: value } )
+    this.setState({ newInputLabel: value })
   }
 
   toggleAllItems = () => {
-    const changedList = this.state.list
-    const listLength = changedList.length
-    const doneListLength = changedList.filter((el) => el.done).length
-    const done = doneListLength < listLength;
+    const { list } = this.state
 
-    changedList.forEach((el) => { el.done = done })
+    const listLength = list.length
+    const doneListLength = list.filter((el) => el.done).length
+    const done = doneListLength < listLength
 
-    this.setState({ list: changedList } );
-    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
+    const changedList = list.map((el) => ({ ...el, done }))
+
+    this.setState({ list: changedList })
+    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
   addNewItem = (content) => {
-    const changedList = this.state.list;
+    const { list, itemId } = this.state
+    const changedList = list
     const item = {
-      id: this.state.itemId,
+      id: itemId,
       done: false,
-      content: content
-    };
-    changedList.push(item);
+      content,
+    }
+    changedList.push(item)
 
     this.setState({
-      itemId: ++this.state.itemId,
-      newInputLabel: "",
-      list: changedList
+      itemId: itemId + 1,
+      newInputLabel: '',
+      list: changedList,
     })
-    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
+    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
   toggleItemDone = (id) => {
-    const changedList = this.state.list;
-    const item = changedList.find((el) => el.id === id);
+    const { list } = this.state
+    const changedList = list
+    const item = changedList.find((el) => el.id === id)
     if (item) {
       item.done = !item.done
     }
 
-    this.setState( { list: changedList } )
-    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
+    this.setState({ list: changedList })
+    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
   changeContent = (id, value) => {
-    const changedList = this.state.list;
-    const item = changedList.find((el) => el.id === id);
+    const { list } = this.state
+    const changedList = list
+    const item = changedList.find((el) => el.id === id)
     if (item) {
       item.content = value
     }
 
-    this.setState( { list: changedList } )
-    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
+    this.setState({ list: changedList })
+    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
   removeItem = (id) => {
-    const changedList = this.state.list;
-    const index = changedList.findIndex((el) => el.id === id);
+    const { list } = this.state
+    const changedList = list
+    const index = changedList.findIndex((el) => el.id === id)
     if (index !== undefined) {
-      changedList.splice(index, 1);
+      changedList.splice(index, 1)
     }
 
-    this.setState( { list: changedList } )
-    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
+    this.setState({ list: changedList })
+    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
   removeDoneTodos = () => {
-    const changedList = this.state.list.filter((el) => !el.done);
-    this.setState( { list: changedList } )
-    window.localStorage.setItem("todoItems", JSON.stringify(changedList));
+    const { list } = this.state
+    const changedList = list.filter((el) => !el.done)
+    this.setState({ list: changedList })
+    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
   changeFilter = (filter) => {
-    this.setState({ filter: filter} );
+    this.setState({ filter })
   }
 
   render() {
-    const listLength = this.state.list.length
-    const doneListLength = this.state.list.filter((el) => el.done).length
-    const itemLeft = listLength - doneListLength;
+    const { list, filter, newInputLabel } = this.state
 
-    let listToRender = this.state.list;
-    if (this.state.filter !== "All") {
-      listToRender = listToRender.filter((el) => this.state.filter === "Active" ? !el.done : el.done)
+    const listLength = list.length
+    const doneListLength = list.filter((el) => el.done).length
+    const itemLeft = listLength - doneListLength
+
+    let listToRender = list
+    if (filter !== 'All') {
+      listToRender = listToRender.filter((el) => (filter === 'Active' ? !el.done : el.done))
     }
 
-    const listItems = listToRender.map((el) =>
+    const listItems = listToRender.map((el) => (
       <TodoItem
         key={el.id}
         id={el.id}
@@ -127,12 +135,12 @@ class TodoList extends React.Component {
         changeContent={this.changeContent}
         removeItem={this.removeItem}
       />
-    );
+    ))
 
     return (
-      <div className={styles["list-container"]}>
+      <div className={styles['list-container']}>
         <TodoInput
-          inputValue={this.state.newInputLabel}
+          inputValue={newInputLabel}
           listLength={listLength}
           doneListLength={doneListLength}
           onNewInputChange={this.handleChange}
@@ -145,12 +153,12 @@ class TodoList extends React.Component {
           itemsDone={doneListLength}
           itemsLeft={itemLeft}
           removeDoneTodos={this.removeDoneTodos}
-          filter={this.state.filter}
+          filter={filter}
           changeFilter={this.changeFilter}
         />
       </div>
-    );
+    )
   }
 }
 
-export default TodoList;
+export default TodoList
