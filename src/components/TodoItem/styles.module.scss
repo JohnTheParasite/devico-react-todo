@@ -1,0 +1,83 @@
+.list-item {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  border-bottom: 1px solid #D9D9D9;
+
+  .preview {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .checkbox {
+      appearance: none;
+
+      &::before {
+        content: '';
+        font-size: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 5px;
+        width: 30px;
+        height: 30px;
+        border: 1px solid #e1edeb;
+        border-radius: 50%;
+      }
+
+      &:checked::before {
+        content: '✓';
+        color: #5cc0ae;
+        border: 1px solid rgba(92, 192, 174, 0.35);
+      }
+    }
+
+    .paragraph {
+      cursor: default;
+      margin: 15px 15px;
+      width: 100%;
+    }
+
+    .remove {
+      display: none;
+      cursor: default;
+      color: #cc9a9a;
+      margin-right: 20px;
+      font-size: 30px;
+
+      &:hover {
+        color: #ae5a5d;
+      }
+    }
+  }
+
+  .edit {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 13px 16px 13px 9px;
+    font-size: 24px;
+    outline: none;
+    margin-left: 53px;
+  }
+
+  &.done {
+    .preview {
+
+      .paragraph {
+        text-decoration: line-through;
+        color: #D9D9D9;
+        transition: all 0.2s ease;
+      }
+    }
+  }
+
+  &:hover{
+    .remove {
+      display: block;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+}
