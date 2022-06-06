@@ -1,36 +1,26 @@
-import React from "react";
-import styles from "./styles.module"
-import TodoFilters from "@/components/todoFilters";
+import React from 'react'
+import TodoFilters from '@/components/todoFilters'
+import styles from './styles.module.scss'
 
 class TodoFooter extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
-    const footerClasses = `${styles.footer} ${(this.props.itemsLength ? "" : styles.hidden)}`
-    const removeDoneClasses = `${styles["remove-all-done"]} ${(this.props.itemsDone ? "" : styles.hidden)}`;
+    const { itemsLength, itemsDone, itemsLeft, filter, changeFilter, removeDoneTodos } = this.props
+
+    const footerClasses = `${styles.footer} ${itemsLength ? '' : styles.hidden}`
+    const removeDoneClasses = `${styles['remove-all-done']} ${itemsDone ? '' : styles.hidden}`
 
     return (
       <div className={footerClasses}>
-        <div className={styles["items-left"]}>
-          {this.props.itemsLeft} items left
-        </div>
-        <TodoFilters
-          filter={this.props.filter}
-          changeFilter={this.props.changeFilter}
-        />
+        <div className={styles['items-left']}>{itemsLeft} items left</div>
+        <TodoFilters filter={filter} changeFilter={changeFilter} />
         <div>
-          <div
-            className={removeDoneClasses}
-            onClick={this.props.removeDoneTodos}
-          >
+          <div className={removeDoneClasses} onClick={removeDoneTodos} role="button" tabIndex={0}>
             Clear completed
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default TodoFooter;
+export default TodoFooter
