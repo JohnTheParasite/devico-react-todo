@@ -11,7 +11,7 @@ class TodoItem extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevState) {
     const { edit } = this.state
     if (prevState.edit !== edit && edit) {
       this.inputEdit.current.focus()
@@ -19,8 +19,8 @@ class TodoItem extends React.Component {
   }
 
   toggleDone = () => {
-    const { id, toggle } = this.props
-    toggle(id)
+    const { id, done, content, changeTask } = this.props
+    changeTask(id, !done, content)
   }
 
   changeContent = (event) => {
@@ -36,11 +36,11 @@ class TodoItem extends React.Component {
   }
 
   beforeChangeContent = () => {
-    const { id, changeContent, removeItem } = this.props
+    const { id, done, changeTask, removeItem } = this.props
     const newContent = this.inputEdit.current.value.trim()
 
     if (newContent) {
-      changeContent(id, newContent)
+      changeTask(id, done, newContent)
 
       this.setState({ edit: false })
     } else {

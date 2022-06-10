@@ -2,6 +2,7 @@ import React from 'react'
 import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/todoFooter'
+import { Api, catchAxiosError } from '@/services/api'
 import styles from './styles.module.scss'
 
 class TodoList extends React.Component {
@@ -9,7 +10,6 @@ class TodoList extends React.Component {
     super(props)
 
     this.state = {
-      itemId: 1,
       newInputLabel: '',
       filter: 'All',
       list: [],
@@ -20,15 +20,20 @@ class TodoList extends React.Component {
     this.getData()
   }
 
-  getData = () => {
-    const storageData = window.localStorage.getItem('todoItems')
-    const result = storageData === null ? [] : JSON.parse(storageData)
-    let itemId = 1
-    if (result.length) {
-      itemId = Math.max(...result.map((el) => el.id)) + 1
+  validateResponseListAndSetState = (res) => {
+    if (res && res.data.length) {
+      this.setState({ list: res.data })
+    } else {
+      this.setState({ list: [] })
     }
+  }
 
-    this.setState({ list: result, itemId })
+  getData = () => {
+    Api.get('/api/tasks')
+      .then(this.validateResponseListAndSetState)
+      .catch((error) => {
+        catchAxiosError(error)
+      })
   }
 
   handleChange = (value) => {
@@ -42,40 +47,30 @@ class TodoList extends React.Component {
     const doneListLength = list.filter((el) => el.done).length
     const done = doneListLength < listLength
 
-    const changedList = list.map((el) => ({ ...el, done }))
-
-    this.setState({ list: changedList })
-    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
+    Api.put('/api/tasks/bulk/update', { done })
+      .then(this.validateResponseListAndSetState)
+      .catch((error) => {
+        catchAxiosError(error)
+      })
   }
 
   addNewItem = (content) => {
-    const { list, itemId } = this.state
-    const changedList = list
-    const item = {
-      id: itemId,
-      done: false,
-      content,
-    }
-    changedList.push(item)
-
+    Api.post('/api/tasks', { content })
+      .then(this.validateResponseListAndSetState)
+      .catch((error) => {
+        catchAxiosError(error)
+      })
     this.setState({
-      itemId: itemId + 1,
       newInputLabel: '',
-      list: changedList,
     })
-    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
-  toggleItemDone = (id) => {
-    const { list } = this.state
-    const changedList = list
-    const item = changedList.find((el) => el.id === id)
-    if (item) {
-      item.done = !item.done
-    }
-
-    this.setState({ list: changedList })
-    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
+  changeTask = (id, done, content) => {
+    Api.put(`/api/tasks/${id}`, { done, content })
+      .then(this.validateResponseListAndSetState)
+      .catch((error) => {
+        catchAxiosError(error)
+      })
   }
 
   changeContent = (id, value) => {
@@ -87,26 +82,22 @@ class TodoList extends React.Component {
     }
 
     this.setState({ list: changedList })
-    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
   }
 
   removeItem = (id) => {
-    const { list } = this.state
-    const changedList = list
-    const index = changedList.findIndex((el) => el.id === id)
-    if (index !== undefined) {
-      changedList.splice(index, 1)
-    }
-
-    this.setState({ list: changedList })
-    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
+    Api.delete(`/api/tasks/${id}`)
+      .then(this.validateResponseListAndSetState)
+      .catch((error) => {
+        catchAxiosError(error)
+      })
   }
 
   removeDoneTodos = () => {
-    const { list } = this.state
-    const changedList = list.filter((el) => !el.done)
-    this.setState({ list: changedList })
-    window.localStorage.setItem('todoItems', JSON.stringify(changedList))
+    Api.delete('/api/tasks/bulk/delete')
+      .then(this.validateResponseListAndSetState)
+      .catch((error) => {
+        catchAxiosError(error)
+      })
   }
 
   changeFilter = (filter) => {
@@ -131,7 +122,7 @@ class TodoList extends React.Component {
         id={el.id}
         done={el.done}
         content={el.content}
-        toggle={this.toggleItemDone}
+        changeTask={this.changeTask}
         changeContent={this.changeContent}
         removeItem={this.removeItem}
       />
