@@ -47,7 +47,7 @@ class TodoList extends React.Component {
     const doneListLength = list.filter((el) => el.done).length
     const done = doneListLength < listLength
 
-    Api.post('/api/completeAll', { done })
+    Api.put('/api/tasks/bulk/update', { done })
       .then(this.validateResponseListAndSetState)
       .catch((error) => {
         catchAxiosError(error)
@@ -93,7 +93,7 @@ class TodoList extends React.Component {
   }
 
   removeDoneTodos = () => {
-    Api.delete('/api/deleteCompleted')
+    Api.delete('/api/tasks/bulk/delete')
       .then(this.validateResponseListAndSetState)
       .catch((error) => {
         catchAxiosError(error)
