@@ -1,95 +1,77 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './styles.module.scss'
 
-class TodoItem extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.inputEdit = React.createRef()
-    this.state = {
-      edit: false,
+function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) {
+  const inputEdit = React.createRef()
+  const [edit, setEdit] = useState(false)
+  useEffect(() => {
+    if (edit) {
+      inputEdit.current.focus()
     }
-  }
+  }, [edit])
 
-  componentDidUpdate(prevState) {
-    const { edit } = this.state
-    if (prevState.edit !== edit && edit) {
-      this.inputEdit.current.focus()
-    }
-  }
-
-  toggleDone = () => {
-    const { id, done, content, changeTask } = this.props
+  const toggleDone = () => {
     changeTask(id, !done, content)
   }
 
-  changeContent = (event) => {
-    const { id, changeContent } = this.props
+  const changePropContent = (event) => {
     const newContent = event.target.value.trim()
     changeContent(id, newContent)
   }
 
-  handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      this.beforeChangeContent()
-    }
-  }
-
-  beforeChangeContent = () => {
-    const { id, done, changeTask, removeItem } = this.props
-    const newContent = this.inputEdit.current.value.trim()
+  const beforeChangeContent = () => {
+    const newContent = inputEdit.current.value.trim()
 
     if (newContent) {
       changeTask(id, done, newContent)
 
-      this.setState({ edit: false })
+      setEdit(false)
     } else {
       removeItem(id)
     }
   }
 
-  toggleEdit = () => {
-    const { edit } = this.state
-    this.setState({ edit: !edit })
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      beforeChangeContent()
+    }
   }
 
-  removeTodo = () => {
-    const { id, removeItem } = this.props
+  const toggleEdit = () => {
+    setEdit(!edit)
+  }
+
+  const removeTodo = () => {
     removeItem(id)
   }
 
-  render() {
-    const { edit } = this.state
-    const { done, content } = this.props
+  const previewClasses = `${styles.preview} ${edit ? styles.hidden : ''}`
+  const editInputClasses = `${styles.edit} ${!edit ? styles.hidden : ''}`
+  const listItemClasses = `${styles['list-item']} ${done ? styles.done : ''}`
 
-    const previewClasses = `${styles.preview} ${edit ? styles.hidden : ''}`
-    const editInputClasses = `${styles.edit} ${!edit ? styles.hidden : ''}`
-    const listItemClasses = `${styles['list-item']} ${done ? styles.done : ''}`
-
-    return (
-      <li className={listItemClasses}>
-        <div className={previewClasses}>
-          <input type="checkbox" className={styles.checkbox} value={done} checked={done} onChange={this.toggleDone} />
-          <p className={styles.paragraph} onDoubleClick={this.toggleEdit}>
-            {content}
-          </p>
-          <div className={styles.remove} onClick={this.removeTodo} role="button" tabIndex={0}>
-            ×
-          </div>
+  return (
+    <li className={listItemClasses}>
+      <div className={previewClasses}>
+        <input type="checkbox" className={styles.checkbox} value={done} checked={done} onChange={toggleDone} />
+        <p className={styles.paragraph} onDoubleClick={toggleEdit}>
+          {content}
+        </p>
+        <div className={styles.remove} onClick={removeTodo} role="button" tabIndex={0}>
+          ×
         </div>
+      </div>
 
-        <input
-          type="text"
-          ref={this.inputEdit}
-          className={editInputClasses}
-          value={content}
-          onChange={this.changeContent}
-          onBlur={this.beforeChangeContent}
-          onKeyDown={this.handleKeyDown}
-        />
-      </li>
-    )
-  }
+      <input
+        type="text"
+        ref={inputEdit}
+        className={editInputClasses}
+        value={content}
+        onChange={changePropContent}
+        onBlur={beforeChangeContent}
+        onKeyDown={handleKeyDown}
+      />
+    </li>
+  )
 }
 
 export default TodoItem
