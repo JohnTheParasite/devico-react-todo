@@ -4,6 +4,7 @@ import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/todoFooter'
 import { Api, catchAxiosError } from '@/services/api'
 import { useFilter } from '@/hooks/filterProvider'
+import { FILTER_ALL, FILTER_ACTIVE } from '@/constants'
 import styles from './styles.module.scss'
 
 function TodoList() {
@@ -95,8 +96,8 @@ function TodoList() {
   const itemLeft = listLength - doneListLength
 
   let listToRender = list
-  if (filter !== 'All') {
-    listToRender = listToRender.filter((el) => (filter === 'Active' ? !el.done : el.done))
+  if (filter !== FILTER_ALL) {
+    listToRender = listToRender.filter((el) => (filter === FILTER_ACTIVE ? !el.done : el.done))
   }
 
   const listItems = listToRender.map((el) => (

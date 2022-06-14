@@ -1,5 +1,6 @@
 import React from 'react'
 import { useFilter, useFilterUpdate } from '@/hooks/filterProvider'
+import { FILTER_ALL, FILTER_ACTIVE, FILTER_COMPLETED } from '@/constants'
 import styles from './styles.module.scss'
 
 function TodoFilters() {
@@ -9,9 +10,9 @@ function TodoFilters() {
     changeFilter(event.target.innerText)
   }
 
-  const filterAllClasses = `${styles.filter} ${filter === 'All' ? styles.active : ''}`
-  const filterActiveClasses = `${styles.filter} ${filter === 'Active' ? styles.active : ''}`
-  const filterCompletedClasses = `${styles.filter} ${filter === 'Completed' ? styles.active : ''}`
+  const filterAllClasses = `${styles.filter} ${filter === FILTER_ALL ? styles.active : ''}`
+  const filterActiveClasses = `${styles.filter} ${filter === FILTER_ACTIVE ? styles.active : ''}`
+  const filterCompletedClasses = `${styles.filter} ${filter === FILTER_COMPLETED ? styles.active : ''}`
 
   return (
     <div className={styles.filters}>

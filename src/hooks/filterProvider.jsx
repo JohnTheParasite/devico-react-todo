@@ -1,4 +1,5 @@
 import React, { useContext, useCallback, useState } from 'react'
+import { FILTER_ALL } from '@/constants'
 
 const FilterContext = React.createContext()
 const FilterUpdateContext = React.createContext()
@@ -12,7 +13,7 @@ export function useFilterUpdate() {
 }
 
 export function FilterProvider({ children }) {
-  const [filter, setFilter] = useState('All')
+  const [filter, setFilter] = useState(FILTER_ALL)
 
   const changeFilter = useCallback((newFilter) => {
     setFilter(newFilter)
