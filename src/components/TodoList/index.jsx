@@ -3,12 +3,13 @@ import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/todoFooter'
 import { Api, catchAxiosError } from '@/services/api'
+import { useFilter } from '@/hooks/filterProvider'
 import styles from './styles.module.scss'
 
 function TodoList() {
   const [newInputLabel, setNewInputLabel] = useState('')
-  const [filter, setFilter] = useState('All')
   const [list, setList] = useState([])
+  const filter = useFilter()
 
   const validateResponseListAndSetState = (res) => {
     if (res && res.data.length) {
@@ -89,10 +90,6 @@ function TodoList() {
       })
   }
 
-  const changeFilter = (newFilter) => {
-    setFilter(newFilter)
-  }
-
   const listLength = list.length
   const doneListLength = list.filter((el) => el.done).length
   const itemLeft = listLength - doneListLength
@@ -130,8 +127,6 @@ function TodoList() {
         itemsDone={doneListLength}
         itemsLeft={itemLeft}
         removeDoneTodos={removeDoneTodos}
-        filter={filter}
-        changeFilter={changeFilter}
       />
     </div>
   )

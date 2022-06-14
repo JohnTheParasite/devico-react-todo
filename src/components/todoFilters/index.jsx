@@ -1,7 +1,10 @@
 import React from 'react'
+import { useFilter, useFilterUpdate } from '@/hooks/filterProvider'
 import styles from './styles.module.scss'
 
-function TodoFilters({ filter, changeFilter }) {
+function TodoFilters() {
+  const filter = useFilter()
+  const changeFilter = useFilterUpdate()
   const handleClick = (event) => {
     changeFilter(event.target.innerText)
   }
