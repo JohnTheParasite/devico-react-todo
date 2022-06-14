@@ -1,11 +1,15 @@
 import React from 'react'
+import { useTodoData } from '@/hooks/TodoDataProvider'
 import styles from './styles.module.scss'
 
-function TodoInput({ inputValue, listLength, doneListLength, onNewInputChange, addItem, arrowClick }) {
+function TodoInput({ inputValue, onNewInputChange, addItem, arrowClick }) {
+  const { getLength } = useTodoData()
+  const { todoLength, todoDoneLength } = getLength()
+
   let arrowClasses = styles.arrow
-  if (listLength === 0) {
+  if (todoLength === 0) {
     arrowClasses = `${styles.arrow} ${styles.invisible}`
-  } else if (listLength === doneListLength) {
+  } else if (todoLength === todoDoneLength) {
     arrowClasses = `${styles.arrow} ${styles.darker}`
   }
 
