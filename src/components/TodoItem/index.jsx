@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import styles from './styles.module.scss'
 
 function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) {
-  const inputEdit = React.createRef()
+  const inputEl = React.useRef(null)
   const [edit, setEdit] = useState(false)
   useEffect(() => {
     if (edit) {
-      inputEdit.current.focus()
+      inputEl.current.focus()
     }
   }, [edit])
 
@@ -20,7 +20,7 @@ function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) 
   }
 
   const beforeChangeContent = () => {
-    const newContent = inputEdit.current.value.trim()
+    const newContent = inputEl.current.value.trim()
 
     if (newContent) {
       changeTask(id, done, newContent)
@@ -63,7 +63,7 @@ function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) 
 
       <input
         type="text"
-        ref={inputEdit}
+        ref={inputEl}
         className={editInputClasses}
         value={content}
         onChange={changePropContent}

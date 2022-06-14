@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/todoFooter'
 import { Api, catchAxiosError } from '@/services/api'
+import { useTodoData } from '@/hooks/TodoDataProvider'
 import styles from './styles.module.scss'
 
 function TodoList() {
   const [newInputLabel, setNewInputLabel] = useState('')
-  const [filter, setFilter] = useState('All')
-  const [list, setList] = useState([])
+  const { list, setList, getLength, getFilteredList } = useTodoData()
+  const { todoLength, todoDoneLength } = getLength()
 
   const validateResponseListAndSetState = (res) => {
     if (res && res.data.length) {
@@ -18,26 +19,12 @@ function TodoList() {
     }
   }
 
-  const getData = () => {
-    Api.get('/api/tasks')
-      .then(validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
-  }
-
-  useEffect(() => {
-    getData()
-  }, [])
-
   const handleChange = (value) => {
     setNewInputLabel(value)
   }
 
   const toggleAllItems = () => {
-    const items = list.length
-    const doneItems = list.filter((el) => el.done).length
-    const done = doneItems < items
+    const done = todoDoneLength < todoLength
 
     Api.put('/api/tasks/bulk/update', { done })
       .then(validateResponseListAndSetState)
@@ -89,20 +76,7 @@ function TodoList() {
       })
   }
 
-  const changeFilter = (newFilter) => {
-    setFilter(newFilter)
-  }
-
-  const listLength = list.length
-  const doneListLength = list.filter((el) => el.done).length
-  const itemLeft = listLength - doneListLength
-
-  let listToRender = list
-  if (filter !== 'All') {
-    listToRender = listToRender.filter((el) => (filter === 'Active' ? !el.done : el.done))
-  }
-
-  const listItems = listToRender.map((el) => (
+  const listItems = getFilteredList().map((el) => (
     <TodoItem
       key={el.id}
       id={el.id}
@@ -118,21 +92,12 @@ function TodoList() {
     <div className={styles['list-container']}>
       <TodoInput
         inputValue={newInputLabel}
-        listLength={listLength}
-        doneListLength={doneListLength}
         onNewInputChange={handleChange}
         addItem={addNewItem}
         arrowClick={toggleAllItems}
       />
       <ul>{listItems}</ul>
-      <TodoFooter
-        itemsLength={listLength}
-        itemsDone={doneListLength}
-        itemsLeft={itemLeft}
-        removeDoneTodos={removeDoneTodos}
-        filter={filter}
-        changeFilter={changeFilter}
-      />
+      <TodoFooter removeDoneTodos={removeDoneTodos} />
     </div>
   )
 }
