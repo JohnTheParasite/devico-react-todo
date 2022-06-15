@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 export const Api = axios.create({
   baseURL: 'http://localhost:8081',
 })
 
-export function catchAxiosError(error) {
+export function catchAxiosError(error: AxiosError) {
   if (error.response) {
     // eslint-disable-next-line no-console
     console.error(error.response)

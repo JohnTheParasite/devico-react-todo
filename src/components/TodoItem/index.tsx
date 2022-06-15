@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import styles from './styles.module.scss'
 
-function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) {
-  const inputEl = React.useRef(null)
+function TodoItem({
+  id,
+  done,
+  content,
+  changeTask,
+  changeContent,
+  removeItem,
+}: {
+  id: string
+  done: boolean
+  content: string
+  changeTask: (id: string, done: boolean, content: string) => void
+  changeContent: (id: string, value: string) => void
+  removeItem: (id: string) => void
+}) {
+  const inputEl = React.useRef<HTMLInputElement>(null)
   const [edit, setEdit] = useState(false)
   useEffect(() => {
     if (edit) {
-      inputEl.current.focus()
+      const currentInput = inputEl.current as HTMLInputElement
+      currentInput.focus()
     }
   }, [edit])
 
@@ -14,13 +29,15 @@ function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) 
     changeTask(id, !done, content)
   }
 
-  const changePropContent = (event) => {
-    const newContent = event.target.value.trim()
+  const changePropContent = () => {
+    const currentInput = inputEl.current as HTMLInputElement
+    const newContent = currentInput.value.trim()
     changeContent(id, newContent)
   }
 
   const beforeChangeContent = () => {
-    const newContent = inputEl.current.value.trim()
+    const currentInput = inputEl.current as HTMLInputElement
+    const newContent = currentInput.value.trim()
 
     if (newContent) {
       changeTask(id, done, newContent)
@@ -31,7 +48,7 @@ function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) 
     }
   }
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       beforeChangeContent()
     }
@@ -52,7 +69,7 @@ function TodoItem({ id, done, content, changeTask, changeContent, removeItem }) 
   return (
     <li className={listItemClasses}>
       <div className={previewClasses}>
-        <input type="checkbox" className={styles.checkbox} value={done} checked={done} onChange={toggleDone} />
+        <input type="checkbox" className={styles.checkbox} checked={done} onChange={toggleDone} />
         <p className={styles.paragraph} onDoubleClick={toggleEdit}>
           {content}
         </p>
