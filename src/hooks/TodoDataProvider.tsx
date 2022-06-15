@@ -1,18 +1,34 @@
-import React, { useContext, useCallback, useState, useMemo, useEffect } from 'react'
+import React, { useContext, useCallback, useState, useMemo, useEffect, ReactNode } from 'react'
 import { Api, catchAxiosError } from '@/services/api'
 import { FILTER_ACTIVE, FILTER_ALL } from '@/constants'
+import { AxiosError } from 'axios'
 
-const TodoDataContext = React.createContext()
+export type ListState = { id: string; content: string; done: boolean; createdAt: string; updatedAt: string }
+export type Lengths = {
+  todoLength: number
+  todoDoneLength: number
+  todoActiveLength: number
+}
+export type TodoDataType = {
+  filter: string
+  changeFilter: (newFilter: string) => void
+  list: ListState[]
+  setList: (newList: ListState[]) => void
+  getLength: () => Lengths
+  getFilteredList: () => ListState[]
+}
+
+const TodoDataContext = React.createContext({} as TodoDataType)
 
 export function useTodoData() {
   return useContext(TodoDataContext)
 }
 
-export function TodoDataProvider({ children }) {
-  const [filter, setFilter] = useState(FILTER_ALL)
-  const [list, setList] = useState([])
+export function TodoDataProvider({ children }: { children: ReactNode }) {
+  const [filter, setFilter] = useState<string>(FILTER_ALL)
+  const [list, setList] = useState<ListState[]>([])
 
-  const changeFilter = useCallback((newFilter) => {
+  const changeFilter = useCallback((newFilter: string) => {
     setFilter(newFilter)
   }, [])
 
@@ -45,7 +61,7 @@ export function TodoDataProvider({ children }) {
           setList([])
         }
       })
-      .catch((error) => {
+      .catch((error: AxiosError) => {
         catchAxiosError(error)
       })
   }, [])

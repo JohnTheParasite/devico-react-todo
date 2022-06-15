@@ -9,14 +9,14 @@ module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: isDev ? 'development' : 'production',
   entry: {
-    main: './index.jsx',
+    main: './index.tsx',
   },
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.css', '.scss'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
@@ -33,9 +33,22 @@ module.exports = {
         use: { loader: 'babel-loader', options: { presets: ['@babel/preset-env'] } },
       },
       {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: { loader: 'babel-loader', options: { presets: ['@babel/preset-env', '@babel/preset-typescript'] } },
+      },
+      {
         test: /\.jsx$/,
         exclude: /node_modules/,
         use: { loader: 'babel-loader', options: { presets: ['@babel/preset-env', '@babel/preset-react'] } },
+      },
+      {
+        test: /\.tsx$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: { presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'] },
+        },
       },
       {
         test: /\.css$/,

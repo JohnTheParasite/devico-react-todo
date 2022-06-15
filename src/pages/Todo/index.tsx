@@ -1,6 +1,6 @@
 import React from 'react'
 import TodoList from '@/components/TodoList'
-import logo from '@/../public/logo.svg'
+import logo from '@/images/logo.svg'
 import { TodoDataProvider } from '@/hooks/TodoDataProvider'
 import styles from './styles.module.scss'
 

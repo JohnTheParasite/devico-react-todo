@@ -5,13 +5,14 @@ import TodoFooter from '@/components/todoFooter'
 import { Api, catchAxiosError } from '@/services/api'
 import { useTodoData } from '@/hooks/TodoDataProvider'
 import styles from './styles.module.scss'
+import { AxiosResponse } from 'axios'
 
 function TodoList() {
   const [newInputLabel, setNewInputLabel] = useState('')
   const { list, setList, getLength, getFilteredList } = useTodoData()
   const { todoLength, todoDoneLength } = getLength()
 
-  const validateResponseListAndSetState = (res) => {
+  const validateResponseListAndSetState = (res: AxiosResponse) => {
     if (res && res.data.length) {
       setList(res.data)
     } else {
@@ -19,7 +20,7 @@ function TodoList() {
     }
   }
 
-  const handleChange = (value) => {
+  const handleChange = (value: string) => {
     setNewInputLabel(value)
   }
 
@@ -33,7 +34,7 @@ function TodoList() {
       })
   }
 
-  const addNewItem = (content) => {
+  const addNewItem = (content: string) => {
     Api.post('/api/tasks', { content })
       .then(validateResponseListAndSetState)
       .catch((error) => {
@@ -42,7 +43,7 @@ function TodoList() {
     setNewInputLabel('')
   }
 
-  const changeTask = (id, done, content) => {
+  const changeTask = (id: string, done: boolean, content: string) => {
     Api.put(`/api/tasks/${id}`, { done, content })
       .then(validateResponseListAndSetState)
       .catch((error) => {
@@ -50,7 +51,7 @@ function TodoList() {
       })
   }
 
-  const changeContent = (id, value) => {
+  const changeContent = (id: string, value: string) => {
     const changedList = [...list]
     const item = changedList.find((el) => el.id === id)
     if (item) {
@@ -60,7 +61,7 @@ function TodoList() {
     setList(changedList)
   }
 
-  const removeItem = (id) => {
+  const removeItem = (id: string) => {
     Api.delete(`/api/tasks/${id}`)
       .then(validateResponseListAndSetState)
       .catch((error) => {

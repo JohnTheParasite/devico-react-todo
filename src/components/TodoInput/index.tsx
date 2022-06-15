@@ -2,7 +2,17 @@ import React from 'react'
 import { useTodoData } from '@/hooks/TodoDataProvider'
 import styles from './styles.module.scss'
 
-function TodoInput({ inputValue, onNewInputChange, addItem, arrowClick }) {
+function TodoInput({
+  inputValue,
+  onNewInputChange,
+  addItem,
+  arrowClick,
+}: {
+  inputValue: string
+  onNewInputChange: (v: string) => void
+  addItem: (v: string) => void
+  arrowClick: () => void
+}) {
   const { getLength } = useTodoData()
   const { todoLength, todoDoneLength } = getLength()
 
@@ -13,13 +23,15 @@ function TodoInput({ inputValue, onNewInputChange, addItem, arrowClick }) {
     arrowClasses = `${styles.arrow} ${styles.darker}`
   }
 
-  const handleChange = (event) => {
-    onNewInputChange(event.target.value)
+  const handleChange = (event: React.ChangeEvent) => {
+    const target = event.target as HTMLInputElement
+    onNewInputChange(target.value)
   }
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter' && event.target.value.trim()) {
-      addItem(event.target.value.trim())
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    const target = event.target as HTMLInputElement
+    if (event.key === 'Enter' && target.value.trim()) {
+      addItem(target.value.trim())
     }
   }
 

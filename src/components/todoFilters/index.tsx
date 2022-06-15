@@ -5,8 +5,9 @@ import styles from './styles.module.scss'
 
 function TodoFilters() {
   const { filter, changeFilter } = useTodoData()
-  const handleClick = (event) => {
-    changeFilter(event.target.innerText)
+  const handleClick = (event: React.MouseEvent) => {
+    const target = event.target as HTMLInputElement
+    changeFilter(target.innerText)
   }
 
   const filterAllClasses = `${styles.filter} ${filter === FILTER_ALL ? styles.active : ''}`
@@ -15,13 +16,13 @@ function TodoFilters() {
 
   return (
     <div className={styles.filters}>
-      <div className={filterAllClasses} onClick={handleClick} role="button" tabIndex="0">
+      <div className={filterAllClasses} onClick={handleClick} role="button" tabIndex={0}>
         All
       </div>
-      <div className={filterActiveClasses} onClick={handleClick} role="button" tabIndex="0">
+      <div className={filterActiveClasses} onClick={handleClick} role="button" tabIndex={0}>
         Active
       </div>
-      <div className={filterCompletedClasses} onClick={handleClick} role="button" tabIndex="0">
+      <div className={filterCompletedClasses} onClick={handleClick} role="button" tabIndex={0}>
         Completed
       </div>
     </div>

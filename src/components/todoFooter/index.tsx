@@ -3,7 +3,7 @@ import TodoFilters from '@/components/todoFilters'
 import { useTodoData } from '@/hooks/TodoDataProvider'
 import styles from './styles.module.scss'
 
-function TodoFooter({ filter, changeFilter, removeDoneTodos }) {
+function TodoFooter({ removeDoneTodos }: { removeDoneTodos: () => void }) {
   const { getLength } = useTodoData()
   const { todoLength, todoDoneLength, todoActiveLength } = getLength()
 
@@ -13,7 +13,7 @@ function TodoFooter({ filter, changeFilter, removeDoneTodos }) {
   return (
     <div className={footerClasses}>
       <div className={styles['items-left']}>{todoActiveLength} items left</div>
-      <TodoFilters filter={filter} changeFilter={changeFilter} />
+      <TodoFilters />
       <div>
         <div className={removeDoneClasses} onClick={removeDoneTodos} role="button" tabIndex={0}>
           Clear completed
