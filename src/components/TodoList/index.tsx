@@ -35,12 +35,17 @@ function TodoList() {
   }
 
   const addNewItem = (content: string) => {
-    Api.post('/api/tasks', { content })
-      .then(validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
-    setNewInputLabel('')
+    const contentLengthRequirement: boolean = content.length >= 4 && content.length <= 30
+    const listLengthRequirement: boolean = list.length < 10
+
+    if (contentLengthRequirement && listLengthRequirement) {
+      Api.post('/api/tasks', { content })
+        .then(validateResponseListAndSetState)
+        .catch((error) => {
+          catchAxiosError(error)
+        })
+      setNewInputLabel('')
+    }
   }
 
   const changeTask = (id: string, done: boolean, content: string) => {

@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import styles from './styles.module.scss'
 
-function TodoItem({
-  id,
-  done,
-  content,
-  changeTask,
-  changeContent,
-  removeItem,
-}: {
+type TodoItemPropsTypes = {
   id: string
   done: boolean
   content: string
   changeTask: (id: string, done: boolean, content: string) => void
   changeContent: (id: string, value: string) => void
   removeItem: (id: string) => void
-}) {
+}
+
+function TodoItem({ id, done, content, changeTask, changeContent, removeItem }: TodoItemPropsTypes) {
   const inputEl = React.useRef<HTMLInputElement>(null)
   const [edit, setEdit] = useState(false)
   useEffect(() => {
