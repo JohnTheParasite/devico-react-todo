@@ -1,8 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/todoFooter'
-import { Api, catchAxiosError } from '@/services/api'
+import { addTodo, changeTodo, changeTodoContent, deleteTodo, deleteCompletedTodos } from '@/redux/actions'
 import styles from './styles.module.scss'
 
 class TodoList extends React.Component {
@@ -11,107 +12,46 @@ class TodoList extends React.Component {
 
     this.state = {
       newInputLabel: '',
-      filter: 'All',
-      list: [],
     }
-  }
-
-  componentDidMount() {
-    this.getData()
-  }
-
-  validateResponseListAndSetState = (res) => {
-    if (res && res.data.length) {
-      this.setState({ list: res.data })
-    } else {
-      this.setState({ list: [] })
-    }
-  }
-
-  getData = () => {
-    Api.get('/api/tasks')
-      .then(this.validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
   }
 
   handleChange = (value) => {
     this.setState({ newInputLabel: value })
   }
 
-  toggleAllItems = () => {
-    const { list } = this.state
-
-    const listLength = list.length
-    const doneListLength = list.filter((el) => el.done).length
-    const done = doneListLength < listLength
-
-    Api.put('/api/tasks/bulk/update', { done })
-      .then(this.validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
-  }
-
   addNewItem = (content) => {
-    Api.post('/api/tasks', { content })
-      .then(this.validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
+    const { addTodoElement } = this.props
+    addTodoElement(content)
     this.setState({
       newInputLabel: '',
     })
   }
 
   changeTask = (id, done, content) => {
-    Api.put(`/api/tasks/${id}`, { done, content })
-      .then(this.validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
+    const { changeTodoElement } = this.props
+    changeTodoElement(id, done, content)
   }
 
   changeContent = (id, value) => {
-    const { list } = this.state
-    const changedList = list
-    const item = changedList.find((el) => el.id === id)
-    if (item) {
-      item.content = value
-    }
-
-    this.setState({ list: changedList })
+    const { changeContentElement } = this.props
+    changeContentElement(id, value)
   }
 
   removeItem = (id) => {
-    Api.delete(`/api/tasks/${id}`)
-      .then(this.validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
+    const { deleteTodoElement } = this.props
+    deleteTodoElement(id)
   }
 
   removeDoneTodos = () => {
-    Api.delete('/api/tasks/bulk/delete')
-      .then(this.validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
-  }
-
-  changeFilter = (filter) => {
-    this.setState({ filter })
+    const { deleteCompletedTodoElements } = this.props
+    deleteCompletedTodoElements()
   }
 
   render() {
-    const { list, filter, newInputLabel } = this.state
+    const { newInputLabel } = this.state
+    const { todos, filter } = this.props
 
-    const listLength = list.length
-    const doneListLength = list.filter((el) => el.done).length
-    const itemLeft = listLength - doneListLength
-
-    let listToRender = list
+    let listToRender = todos
     if (filter !== 'All') {
       listToRender = listToRender.filter((el) => (filter === 'Active' ? !el.done : el.done))
     }
@@ -130,26 +70,40 @@ class TodoList extends React.Component {
 
     return (
       <div className={styles['list-container']}>
-        <TodoInput
-          inputValue={newInputLabel}
-          listLength={listLength}
-          doneListLength={doneListLength}
-          onNewInputChange={this.handleChange}
-          addItem={this.addNewItem}
-          arrowClick={this.toggleAllItems}
-        />
+        <TodoInput inputValue={newInputLabel} onNewInputChange={this.handleChange} addItem={this.addNewItem} />
         <ul>{listItems}</ul>
-        <TodoFooter
-          itemsLength={listLength}
-          itemsDone={doneListLength}
-          itemsLeft={itemLeft}
-          removeDoneTodos={this.removeDoneTodos}
-          filter={filter}
-          changeFilter={this.changeFilter}
-        />
+        <TodoFooter removeDoneTodos={this.removeDoneTodos} />
       </div>
     )
   }
 }
 
-export default TodoList
+const mapStateToProps = (state) => {
+  return {
+    todos: state.taskList.todos,
+    lengths: state.taskList.lengths,
+    filter: state.filterReducer.filter,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodoElement: (content) => {
+      dispatch(addTodo(content))
+    },
+    changeTodoElement: (id, done, content) => {
+      dispatch(changeTodo(id, done, content))
+    },
+    changeContentElement: (id, content) => {
+      dispatch(changeTodoContent(id, content))
+    },
+    deleteTodoElement: (id) => {
+      dispatch(deleteTodo(id))
+    },
+    deleteCompletedTodoElements: () => {
+      dispatch(deleteCompletedTodos())
+    },
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList)

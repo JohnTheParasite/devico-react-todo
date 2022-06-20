@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { setFilter } from '@/redux/actions'
 import styles from './styles.module.scss'
 
 class TodoFilters extends React.Component {
@@ -30,4 +32,18 @@ class TodoFilters extends React.Component {
   }
 }
 
-export default TodoFilters
+const mapStateToProps = (state) => {
+  return {
+    filter: state.filterReducer.filter,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    changeFilter: (filter) => {
+      dispatch(setFilter(filter))
+    },
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoFilters)

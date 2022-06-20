@@ -24,7 +24,9 @@
     "react/prefer-stateless-function": "off",
     "react/prop-types": "off",
     "jsx-a11y/click-events-have-key-events": "off",
-    "jsx-a11y/control-has-associated-label": "off"
+    "jsx-a11y/control-has-associated-label": "off",
+    "no-underscore-dangle": "off",
+    "default-param-last": "off"
   },
   "settings": {
     "import/resolver": "webpack"
