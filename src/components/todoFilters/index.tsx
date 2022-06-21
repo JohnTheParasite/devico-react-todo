@@ -1,13 +1,17 @@
 import React from 'react'
-import { useTodoData } from '@/hooks/TodoDataProvider'
 import { FILTER_ALL, FILTER_ACTIVE, FILTER_COMPLETED } from '@/constants'
 import styles from './styles.module.scss'
+import { getFilter, useTypedSelector } from '@/redux/selectors'
+import { useDispatch } from 'react-redux'
+import { setFilter } from '@/redux/actions'
 
 function TodoFilters() {
-  const { filter, changeFilter } = useTodoData()
+  const filter = useTypedSelector((state) => getFilter(state))
+  const dispatch = useDispatch()
+
   const handleClick = (event: React.MouseEvent) => {
     const target = event.target as HTMLInputElement
-    changeFilter(target.innerText)
+    dispatch(setFilter(target.innerText))
   }
 
   const filterAllClasses = `${styles.filter} ${filter === FILTER_ALL ? styles.active : ''}`
