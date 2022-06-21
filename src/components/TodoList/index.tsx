@@ -1,88 +1,57 @@
-import React, { useState } from 'react'
+import React, { ReducerState, useState } from 'react'
 import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/todoFooter'
-import { Api, catchAxiosError } from '@/services/api'
-import { useTodoData } from '@/hooks/TodoDataProvider'
 import styles from './styles.module.scss'
-import { AxiosResponse } from 'axios'
+import { useDispatch } from 'react-redux'
+import {
+  addTodo,
+  changeTodo,
+  changeTodoContent,
+  deleteTodo,
+  deleteCompletedTodos,
+  toggleAllTodos,
+} from '@/redux/actions'
+import { getFilter, getFilteredTodos, getLengths, getTodos, useTypedSelector } from '@/redux/selectors'
 
 function TodoList() {
   const [newInputLabel, setNewInputLabel] = useState('')
-  const { list, setList, getLength, getFilteredList } = useTodoData()
-  const { todoLength, todoDoneLength } = getLength()
 
-  const validateResponseListAndSetState = (res: AxiosResponse) => {
-    if (res && res.data.length) {
-      setList(res.data)
-    } else {
-      setList([])
-    }
-  }
+  const lengths = useTypedSelector((state) => getLengths(state))
+  const filteredList = useTypedSelector((state) => getFilteredTodos(state))
+  const dispatch = useDispatch()
 
   const handleChange = (value: string) => {
     setNewInputLabel(value)
   }
 
   const toggleAllItems = () => {
-    const done = todoDoneLength < todoLength
-
-    Api.put('/api/tasks/bulk/update', { done })
-      .then(validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
+    const done = lengths.completed < lengths.all
+    dispatch(toggleAllTodos(done))
   }
 
   const addNewItem = (content: string) => {
-    const contentLengthRequirement: boolean = content.length >= 4 && content.length <= 30
-    const listLengthRequirement: boolean = list.length < 10
-
-    if (contentLengthRequirement && listLengthRequirement) {
-      Api.post('/api/tasks', { content })
-        .then(validateResponseListAndSetState)
-        .catch((error) => {
-          catchAxiosError(error)
-        })
-      setNewInputLabel('')
-    }
+    dispatch(addTodo(content))
+    setNewInputLabel('')
   }
 
   const changeTask = (id: string, done: boolean, content: string) => {
-    Api.put(`/api/tasks/${id}`, { done, content })
-      .then(validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
+    dispatch(changeTodo(id, done, content))
   }
 
   const changeContent = (id: string, value: string) => {
-    const changedList = [...list]
-    const item = changedList.find((el) => el.id === id)
-    if (item) {
-      item.content = value
-    }
-
-    setList(changedList)
+    dispatch(changeTodoContent(id, value))
   }
 
   const removeItem = (id: string) => {
-    Api.delete(`/api/tasks/${id}`)
-      .then(validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
+    dispatch(deleteTodo(id))
   }
 
   const removeDoneTodos = () => {
-    Api.delete('/api/tasks/bulk/delete')
-      .then(validateResponseListAndSetState)
-      .catch((error) => {
-        catchAxiosError(error)
-      })
+    dispatch(deleteCompletedTodos())
   }
 
-  const listItems = getFilteredList().map((el) => (
+  const listItems = filteredList.map((el) => (
     <TodoItem
       key={el.id}
       id={el.id}
@@ -103,7 +72,7 @@ function TodoList() {
         arrowClick={toggleAllItems}
       />
       <ul>{listItems}</ul>
-      <TodoFooter removeDoneTodos={removeDoneTodos} />
+      <TodoFooter />
     </div>
   )
 }
