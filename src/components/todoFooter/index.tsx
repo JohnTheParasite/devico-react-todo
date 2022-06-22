@@ -1,12 +1,12 @@
 import React from 'react'
 import TodoFilters from '@/components/todoFilters'
 import styles from './styles.module.scss'
-import { getLengths, useTypedSelector } from '@/redux/selectors'
-import { useDispatch } from 'react-redux'
+import { getLengths } from '@/redux/selectors'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteCompletedTodos } from '@/redux/actions'
 
 function TodoFooter() {
-  const lengths = useTypedSelector((state) => getLengths(state))
+  const lengths = useSelector(getLengths)
   const dispatch = useDispatch()
 
   const footerClasses = `${styles.footer} ${lengths.all ? '' : styles.hidden}`

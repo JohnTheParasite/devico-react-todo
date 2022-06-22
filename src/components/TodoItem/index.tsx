@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import styles from './styles.module.scss'
 
 type TodoItemPropsTypes = {
-  id: string
+  id: string | number
   done: boolean
   content: string
-  changeTask: (id: string, done: boolean, content: string) => void
-  changeContent: (id: string, value: string) => void
-  removeItem: (id: string) => void
+  changeTask: (id: string | number, done: boolean, content: string) => void
+  changeContent: (id: string | number, value: string) => void
+  removeItem: (id: string | number) => void
 }
 
 function TodoItem({ id, done, content, changeTask, changeContent, removeItem }: TodoItemPropsTypes) {

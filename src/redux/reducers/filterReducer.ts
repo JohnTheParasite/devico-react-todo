@@ -1,6 +1,10 @@
 import { ActionFormat, SetFilterAction } from '@/redux/actionTypes'
 
-const initialState = {
+export interface IInitialState {
+  filter: string
+}
+
+const initialState: IInitialState = {
   filter: 'All',
 }
 
