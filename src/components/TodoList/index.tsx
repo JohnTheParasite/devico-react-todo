@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/todoFooter'
 import styles from './styles.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { addTodo, changeTodo, changeTodoContent, deleteTodo, toggleAllTodos } from '@/redux/actions'
+import { changeTodoContent } from '@/redux/actions'
 import { getFilteredTodos, getLengths } from '@/redux/selectors'
+import { fetchTodos, addTodo, changeTodo, deleteTodo, toggleAllTodos } from '@/redux/thunks'
 
 function TodoList() {
   const [newInputLabel, setNewInputLabel] = useState('')
@@ -14,22 +15,26 @@ function TodoList() {
   const filteredList = useSelector(getFilteredTodos)
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    dispatch(fetchTodos() as any)
+  }, [])
+
   const handleChange = (value: string) => {
     setNewInputLabel(value)
   }
 
   const toggleAllItems = () => {
     const done = lengths.completed < lengths.all
-    dispatch(toggleAllTodos(done))
+    dispatch(toggleAllTodos(done) as any)
   }
 
   const addNewItem = (content: string) => {
-    dispatch(addTodo(content))
+    dispatch(addTodo(content) as any)
     setNewInputLabel('')
   }
 
   const changeTask = (id: string | number, done: boolean, content: string) => {
-    dispatch(changeTodo(id, done, content))
+    dispatch(changeTodo(id, done, content) as any)
   }
 
   const changeContent = (id: string | number, value: string) => {
@@ -37,7 +42,7 @@ function TodoList() {
   }
 
   const removeItem = (id: string | number) => {
-    dispatch(deleteTodo(id))
+    dispatch(deleteTodo(id) as any)
   }
 
   const listItems = filteredList.map((el) => (
