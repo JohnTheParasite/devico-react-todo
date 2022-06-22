@@ -1,12 +1,12 @@
 import React from 'react'
 import { FILTER_ALL, FILTER_ACTIVE, FILTER_COMPLETED } from '@/constants'
 import styles from './styles.module.scss'
-import { getFilter, useTypedSelector } from '@/redux/selectors'
-import { useDispatch } from 'react-redux'
+import { getFilter } from '@/redux/selectors'
+import { useDispatch, useSelector } from 'react-redux'
 import { setFilter } from '@/redux/actions'
 
 function TodoFilters() {
-  const filter = useTypedSelector((state) => getFilter(state))
+  const filter = useSelector(getFilter)
   const dispatch = useDispatch()
 
   const handleClick = (event: React.MouseEvent) => {

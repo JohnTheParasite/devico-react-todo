@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './styles.module.scss'
-import { getLengths, useTypedSelector } from '@/redux/selectors'
+import { getLengths } from '@/redux/selectors'
+import { useSelector } from 'react-redux'
 
 function TodoInput({
   inputValue,
@@ -13,7 +14,7 @@ function TodoInput({
   addItem: (v: string) => void
   arrowClick: () => void
 }) {
-  const lengths = useTypedSelector((state) => getLengths(state))
+  const lengths = useSelector(getLengths)
 
   let arrowClasses = styles.arrow
   if (lengths.all === 0) {
