@@ -1,4 +1,4 @@
-import { ActionFormat, SetFilterAction } from '@/redux/actionTypes'
+import { ActionFormat, SetFilterAction } from '@/redux/Types'
 
 export interface IInitialState {
   filter: string

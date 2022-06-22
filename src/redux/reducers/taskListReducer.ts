@@ -3,38 +3,28 @@ import {
   ActionOptions,
   AddChangeTodoAction,
   DeleteTodoAction,
+  GetTodosAction,
+  TodolistType,
   ToggleAllTodosAction,
-} from '@/redux/actionTypes'
+} from '@/redux/Types'
 
 type lengthsType = { all: number; active: number; completed: number }
 
-type listType = {
-  id: number | string
-  content: string
-  done: boolean
-}[]
-
 export interface IInitialState {
   lengths: lengthsType
-  todos: listType
+  todos: TodolistType
 }
 
 const initialState: IInitialState = {
   lengths: {
-    all: 1,
-    active: 1,
+    all: 0,
+    active: 0,
     completed: 0,
   },
-  todos: [
-    {
-      id: 0,
-      content: 'Just content',
-      done: false,
-    },
-  ],
+  todos: [],
 }
 
-function calculateLengths(list: listType): lengthsType {
+function calculateLengths(list: TodolistType): lengthsType {
   return {
     all: list.length,
     active: list.filter((el) => !el.done).length,
@@ -44,6 +34,14 @@ function calculateLengths(list: listType): lengthsType {
 
 const taskListReducer = (state = initialState, action: ActionFormat<ActionOptions>) => {
   switch (action.type) {
+    case 'GET_TODOS': {
+      const actualTodo = action.payload as GetTodosAction
+      return {
+        ...state,
+        todos: actualTodo.todos,
+        lengths: calculateLengths(actualTodo.todos),
+      }
+    }
     case 'ADD_TODO': {
       const addPayload = action.payload as AddChangeTodoAction
       const newList = [...state.todos, { ...addPayload, done: false }]
