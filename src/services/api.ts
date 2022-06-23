@@ -1,8 +1,38 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 
-export const Api = axios.create({
-  baseURL: 'http://localhost:8081',
-})
+class Api {
+  private readonly api: AxiosInstance
+
+  public constructor(endpoint: string) {
+    this.api = axios.create({
+      baseURL: endpoint,
+    })
+  }
+
+  getAllTodos() {
+    return this.api.get('/api/tasks')
+  }
+
+  addTodo(content: string) {
+    return this.api.post('/api/tasks', { content })
+  }
+
+  changeTodo(id: string | number, done: boolean, content: string) {
+    return this.api.put(`/api/tasks/${id}`, { done, content })
+  }
+
+  deleteTodo(id: string | number) {
+    return this.api.delete(`/api/tasks/${id}`)
+  }
+
+  toggleAll(done: boolean) {
+    return this.api.put('/api/tasks/bulk/update', { done })
+  }
+
+  deleteCompleted() {
+    return this.api.delete('/api/tasks/bulk/delete')
+  }
+}
 
 export function catchAxiosError(error: AxiosError) {
   if (error.response) {
@@ -17,4 +47,4 @@ export function catchAxiosError(error: AxiosError) {
   }
 }
 
-export default Api
+export default new Api('http://localhost:8081')
