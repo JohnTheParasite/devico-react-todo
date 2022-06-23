@@ -1,10 +1,14 @@
-import Api, { catchAxiosError } from '@/services/api'
-import { AxiosError, AxiosResponse } from 'axios'
+import { catchAxiosError } from '@/services/api'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { refreshTodos } from '@/redux/actions'
 import { Dispatch } from 'redux'
 import { TodolistType } from '@/redux/Types'
 
 type ResponseType = AxiosResponse<TodolistType>
+
+const Api = axios.create({
+  baseURL: 'http://localhost:8081',
+})
 
 export function fetchTodos() {
   return async (dispatch: Dispatch) => {
