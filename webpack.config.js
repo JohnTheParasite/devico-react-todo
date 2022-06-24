@@ -14,6 +14,7 @@ module.exports = {
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss'],
@@ -82,5 +83,6 @@ module.exports = {
   devServer: {
     port: 4200,
     hot: isDev,
+    historyApiFallback: true,
   },
 }

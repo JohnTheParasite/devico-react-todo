@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "lib": [
+      "es6",
       "dom",
       "dom.iterable",
       "esnext"
@@ -10,6 +11,9 @@
     "paths": {
       "@/*": ["src/*"],
     },
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
     "declaration": true /* Generates corresponding '.d.ts' file. */,
     "declarationMap": true /* Generates a sourcemap for each corresponding '.d.ts' file. */,
     "allowJs": true,

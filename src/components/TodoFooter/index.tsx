@@ -1,5 +1,5 @@
 import React from 'react'
-import TodoFilters from '@/components/todoFilters'
+import TodoFilters from '@/components/TodoFilters'
 import styles from './styles.module.scss'
 import { getLengths } from '@/redux/selectors'
 import { useDispatch, useSelector } from 'react-redux'
