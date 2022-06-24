@@ -1,0 +1,47 @@
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-logo {
+  width: 20%;
+  height: auto;
+  pointer-events: none;
+}
+
+.inner {
+  width: 400px;
+  background-color: white;
+  border-radius: 0.428rem;
+  box-shadow: 0 4px 24px 0 rgba(black, 10%);
+
+  .login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 21px;
+    gap: 14px;
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 28px;
+      color: rgb(96, 216, 249);
+    }
+
+    .button {
+      margin: 15px 0;
+    }
+  }
+}

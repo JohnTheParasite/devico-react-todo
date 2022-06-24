@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
-import TodoFooter from '@/components/todoFooter'
+import TodoFooter from '@/components/TodoFooter'
 import styles from './styles.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {

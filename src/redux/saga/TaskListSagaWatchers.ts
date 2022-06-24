@@ -1,9 +1,21 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { put, takeEvery } from 'redux-saga/effects'
 import ApiCall from '@/services/api'
 import { refreshTodos } from '@/redux/actions'
+import {
+  ActionFormat,
+  ActionOptions,
+  AddChangeTodoAction,
+  DeleteTodoAction,
+  TodolistType,
+  ToggleAllTodosAction,
+} from '@/redux/Types'
+import { AxiosResponse } from 'axios'
+
+type ActionType = ActionFormat<ActionOptions>
+type AxResponse = AxiosResponse<TodolistType>
 
 function* GetDataWorker() {
-  const res = yield ApiCall.getAllTodos()
+  const res: AxResponse = yield ApiCall.getAllTodos()
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
   } else {
@@ -15,10 +27,9 @@ function* watchGetData() {
   yield takeEvery('ASYNC_GET_TODOS', GetDataWorker)
 }
 
-function* AddTodoWorker(action) {
-  const addTodo = (content) => ApiCall.addTodo(content)
-  const { content } = action.payload
-  const res = yield call(addTodo, content)
+function* AddTodoWorker(action: ActionType) {
+  const { content } = action.payload as AddChangeTodoAction
+  const res: AxResponse = yield ApiCall.addTodo(content)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
   } else {
@@ -30,10 +41,9 @@ function* watchAddTodo() {
   yield takeEvery('ASYNC_ADD_TODO', AddTodoWorker)
 }
 
-function* ChangeTodoWorker(action) {
-  const changeTodo = (id, done, content) => ApiCall.changeTodo(id, done, content)
-  const { id, done, content } = action.payload
-  const res = yield call(changeTodo, id, done, content)
+function* ChangeTodoWorker(action: ActionType) {
+  const { id, done, content } = action.payload as AddChangeTodoAction
+  const res: AxResponse = yield ApiCall.changeTodo(id, done, content)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
   } else {
@@ -45,10 +55,9 @@ function* watchChangeTodo() {
   yield takeEvery('ASYNC_CHANGE_TODO', ChangeTodoWorker)
 }
 
-function* DeleteTodoWorker(action) {
-  const deleteTodo = (id) => ApiCall.deleteTodo(id)
-  const { id } = action.payload
-  const res = yield call(deleteTodo, id)
+function* DeleteTodoWorker(action: ActionType) {
+  const { id } = action.payload as DeleteTodoAction
+  const res: AxResponse = yield ApiCall.deleteTodo(id)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
   } else {
@@ -60,10 +69,9 @@ function* watchDeleteTodo() {
   yield takeEvery('ASYNC_DELETE_TODO', DeleteTodoWorker)
 }
 
-function* ToggleAllTodosWorker(action) {
-  const toggleAll = (done) => ApiCall.toggleAll(done)
-  const { done } = action.payload
-  const res = yield call(toggleAll, done)
+function* ToggleAllTodosWorker(action: ActionType) {
+  const { done } = action.payload as ToggleAllTodosAction
+  const res: AxResponse = yield ApiCall.toggleAll(done)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
   } else {
@@ -76,8 +84,7 @@ function* watchToggleAllTodos() {
 }
 
 function* DeleteCompletedTodosWorker() {
-  const deleteCompleted = () => ApiCall.deleteCompleted()
-  const res = yield call(deleteCompleted)
+  const res: AxResponse = yield ApiCall.deleteCompleted()
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
   } else {
