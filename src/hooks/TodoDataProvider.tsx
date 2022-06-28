@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useState, useMemo, useEffect, ReactNode } from 'react'
-import { Api, catchAxiosError } from '@/services/api'
+import Api, { catchAxiosError } from '@/services/api'
 import { FILTER_ACTIVE, FILTER_ALL } from '@/constants'
 import { AxiosError } from 'axios'
 import { TodoDataType, ListState } from '@/types/todoList'
@@ -39,7 +39,7 @@ export function TodoDataProvider({ children }: { children: ReactNode }) {
   }, [filter, list])
 
   useEffect(() => {
-    Api.get('/api/tasks')
+    Api.getAllTodos()
       .then((res) => {
         if (res && res.data.length) {
           setList(res.data)

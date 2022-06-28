@@ -5,7 +5,7 @@ import styles from './styles.module.scss'
 function Registration() {
   return (
     <div className={styles.wrapper}>
-      <LoginForm type="registration"></LoginForm>
+      <LoginForm formType="registration"></LoginForm>
     </div>
   )
 }
