@@ -2,12 +2,12 @@ import React from 'react'
 import LoginForm from '@/components/LoginForm'
 import styles from './styles.module.scss'
 
-function Login() {
+function Registration() {
   return (
     <div className={styles.wrapper}>
-      <LoginForm formType="login"></LoginForm>
+      <LoginForm formType="registration"></LoginForm>
     </div>
   )
 }
 
-export default Login
+export default Registration

@@ -40,8 +40,26 @@
       color: rgb(96, 216, 249);
     }
 
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
     .button {
       margin: 15px 0;
+    }
+
+    .link-container {
+      display: flex;
+      justify-content: center;
+      gap: 0.3rem;
+      color: grey;
+      font-size: 14px;
+
+      .link {
+        color: black;
+      }
     }
   }
 }
