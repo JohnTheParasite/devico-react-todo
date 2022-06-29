@@ -12,17 +12,18 @@ import {
   asyncDeleteTodo,
   asyncToggleAllTodo,
 } from '@/redux/actions'
-import { getFilteredTodos, getLengths } from '@/redux/selectors'
+import { getCurrentUserId, getFilteredTodos, getLengths } from '@/redux/selectors'
 
 function TodoList() {
   const [newInputLabel, setNewInputLabel] = useState('')
 
   const lengths = useSelector(getLengths)
   const filteredList = useSelector(getFilteredTodos)
+  const userId = useSelector(getCurrentUserId) as string
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(asyncRefreshTodos())
+    dispatch(asyncRefreshTodos(userId))
   }, [])
 
   const handleChange = (value: string) => {
@@ -31,11 +32,11 @@ function TodoList() {
 
   const toggleAllItems = () => {
     const done = lengths.completed < lengths.all
-    dispatch(asyncToggleAllTodo(done))
+    dispatch(asyncToggleAllTodo(userId, done))
   }
 
   const addNewItem = (content: string) => {
-    dispatch(asyncAddTodo(content))
+    dispatch(asyncAddTodo(content, userId))
     setNewInputLabel('')
   }
 

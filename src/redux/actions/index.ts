@@ -25,17 +25,21 @@ export const refreshTodos = (todos: TodolistType) => {
   }
 }
 
-export const asyncRefreshTodos = () => {
+export const asyncRefreshTodos = (userId: string) => {
   return {
     type: 'ASYNC_GET_TODOS',
+    payload: {
+      userId,
+    },
   }
 }
 
-export const asyncAddTodo = (content: string) => {
+export const asyncAddTodo = (content: string, userId: string) => {
   return {
     type: 'ASYNC_ADD_TODO',
     payload: {
       content,
+      userId,
     },
   }
 }
@@ -60,18 +64,22 @@ export const asyncDeleteTodo = (id: string | number) => {
   }
 }
 
-export const asyncToggleAllTodo = (done: boolean) => {
+export const asyncToggleAllTodo = (userId: string, done: boolean) => {
   return {
     type: 'ASYNC_TOGGLE_ALL_TODO',
     payload: {
+      userId,
       done,
     },
   }
 }
 
-export const asyncDeleteCompletedTodos = () => {
+export const asyncDeleteCompletedTodos = (userId: string) => {
   return {
     type: 'ASYNC_DELETE_COMPLETED_TODOS',
+    payload: {
+      userId,
+    },
   }
 }
 

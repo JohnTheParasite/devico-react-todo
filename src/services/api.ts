@@ -9,12 +9,12 @@ class Api {
     })
   }
 
-  getAllTodos() {
-    return this.api.get('/api/tasks')
+  getAllTodos(userId: string) {
+    return this.api.get(`/api/tasks/${userId}`)
   }
 
-  addTodo(content: string) {
-    return this.api.post('/api/tasks', { content })
+  addTodo(content: string, userId: string) {
+    return this.api.post('/api/tasks', { content, userId })
   }
 
   changeTodo(id: string | number, done: boolean, content: string) {
@@ -25,12 +25,12 @@ class Api {
     return this.api.delete(`/api/tasks/${id}`)
   }
 
-  toggleAll(done: boolean) {
-    return this.api.put('/api/tasks/bulk/update', { done })
+  toggleAll(userId: string, done: boolean) {
+    return this.api.put('/api/tasks/bulk/update', { userId, done })
   }
 
-  deleteCompleted() {
-    return this.api.delete('/api/tasks/bulk/delete')
+  deleteCompleted(userId: string) {
+    return this.api.delete(`/api/tasks/bulk/delete/${userId}`)
   }
 
   authorize(email: string, password: string) {
