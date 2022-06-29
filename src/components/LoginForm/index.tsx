@@ -40,7 +40,8 @@ export default function LoginForm({ formType }: { formType: string }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const [currentError, setCurrentError] = useState('')
+  let validationError = ''
+  const [loginError, setLoginError] = useState('')
 
   type IFormInput = IFormInputReg | IFormInputLog
 
@@ -51,6 +52,14 @@ export default function LoginForm({ formType }: { formType: string }) {
   })
 
   const onSubmit = (data: IFormInput) => {
+    if (formType === 'registration') {
+      registration(data as IFormInputReg)
+    } else {
+      login(data as IFormInputLog)
+    }
+  }
+
+  const login = (data: IFormInputLog) => {
     const { email, password } = data
     Api.authorize(email, password)
       .then((res: AxiosResponse<UserType>) => {
@@ -60,25 +69,30 @@ export default function LoginForm({ formType }: { formType: string }) {
         }
       })
       .catch((res: AxiosError<ErrorMessage>) => {
-        console.log(res)
-        console.log(res.response?.data.message)
+        let error = ''
         if (res.response?.status === 400) {
-          // alertMessage = res.response?.data.message
+          error = res.response?.data.message
         }
+        setLoginError(error)
       })
   }
 
-  const Validate = () => {
-    console.log('clicked')
-    let errMsg = ''
-    if (formType === 'login') {
-      if ('email' in errors) {
-        errMsg = 'Email must be valid'
-      } else if ('password' in errors) {
-        errMsg = errors.password?.message as string
-      }
-    }
-    setCurrentError(errMsg)
+  const registration = (data: IFormInputReg) => {
+    const { login, email, password } = data
+    Api.register(login, email, password)
+      .then((res: AxiosResponse<UserType>) => {
+        if (res.status === 200) {
+          dispatch(setCurrentUser(res.data))
+          navigate('/todos')
+        }
+      })
+      .catch((res: AxiosError<ErrorMessage>) => {
+        let error = ''
+        if (res.response?.status === 400) {
+          error = res.response?.data.message
+        }
+        setLoginError(error)
+      })
   }
 
   const {
@@ -87,11 +101,20 @@ export default function LoginForm({ formType }: { formType: string }) {
     formState: { errors },
   } = formMethods
 
+  if (formType === 'login') {
+    if ('email' in errors) {
+      validationError = 'Email must be valid'
+    } else if ('password' in errors) {
+      validationError = errors.password?.message as string
+    }
+  }
+
+  const alertMessage = validationError.length ? <Alert severity="error">{validationError}</Alert> : ''
+  const loginMessage = loginError.length ? <Alert severity="error">{loginError}</Alert> : ''
+
   const loginTextField = (
     <TextField label="Login" variant="standard" required={true} type="text" size="small" {...register('login')} />
   )
-
-  const alertMessage = currentError.length ? <Alert severity="error">{currentError}</Alert> : ''
 
   const confirmPasswordTextField = (
     <TextField
@@ -168,7 +191,8 @@ export default function LoginForm({ formType }: { formType: string }) {
           />
           {formType === 'registration' ? confirmPasswordTextField : ''}
           {alertMessage}
-          <Button variant="contained" className={styles.button} type="submit" onClick={Validate}>
+          {loginMessage}
+          <Button variant="contained" className={styles.button} type="submit">
             {formType === 'registration' ? 'Sign up' : 'Login'}
           </Button>
           {LinkContainer}

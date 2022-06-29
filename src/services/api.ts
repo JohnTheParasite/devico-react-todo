@@ -36,6 +36,10 @@ class Api {
   authorize(email: string, password: string) {
     return this.api.post('/api/login', { email, password })
   }
+
+  register(login: string, email: string, password: string) {
+    return this.api.post('/api/users', { login, email, password })
+  }
 }
 
 export function catchAxiosError(error: AxiosError) {
