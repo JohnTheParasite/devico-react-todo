@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './styles.module.scss'
 import logo from '@/images/logo.svg'
 import { Button, TextField, Alert } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useDispatch } from 'react-redux'
 import * as yup from 'yup'
+import Api from '@/services/api'
+import { AxiosResponse, AxiosError } from 'axios'
+import { ErrorMessage, UserType } from '@/redux/Types'
+import { setCurrentUser } from '@/redux/actions'
 
 const schemaReg = yup.object().shape({
   login: yup.string().required(),
@@ -32,7 +37,11 @@ interface IFormInputLog {
 }
 
 export default function LoginForm({ formType }: { formType: string }) {
-  let currentError = ''
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  let validationError = ''
+  const [loginError, setLoginError] = useState('')
 
   type IFormInput = IFormInputReg | IFormInputLog
 
@@ -43,7 +52,47 @@ export default function LoginForm({ formType }: { formType: string }) {
   })
 
   const onSubmit = (data: IFormInput) => {
-    console.log(data)
+    if (formType === 'registration') {
+      registration(data as IFormInputReg)
+    } else {
+      login(data as IFormInputLog)
+    }
+  }
+
+  const login = (data: IFormInputLog) => {
+    const { email, password } = data
+    Api.authorize(email, password)
+      .then((res: AxiosResponse<UserType>) => {
+        if (res.status === 200) {
+          dispatch(setCurrentUser(res.data))
+          navigate('/todos')
+        }
+      })
+      .catch((res: AxiosError<ErrorMessage>) => {
+        let error = ''
+        if (res.response?.status === 400) {
+          error = res.response?.data.message
+        }
+        setLoginError(error)
+      })
+  }
+
+  const registration = (data: IFormInputReg) => {
+    const { login, email, password } = data
+    Api.register(login, email, password)
+      .then((res: AxiosResponse<UserType>) => {
+        if (res.status === 200) {
+          dispatch(setCurrentUser(res.data))
+          navigate('/todos')
+        }
+      })
+      .catch((res: AxiosError<ErrorMessage>) => {
+        let error = ''
+        if (res.response?.status === 400) {
+          error = res.response?.data.message
+        }
+        setLoginError(error)
+      })
   }
 
   const {
@@ -52,19 +101,20 @@ export default function LoginForm({ formType }: { formType: string }) {
     formState: { errors },
   } = formMethods
 
-  const loginTextField = (
-    <TextField label="Login" variant="standard" required={true} type="text" size="small" {...register('login')} />
-  )
-
   if (formType === 'login') {
     if ('email' in errors) {
-      currentError = 'Email must be valid'
+      validationError = 'Email must be valid'
     } else if ('password' in errors) {
-      currentError = errors.password?.message as string
+      validationError = errors.password?.message as string
     }
   }
 
-  const alertMessage = currentError.length ? <Alert severity="error">{currentError}</Alert> : ''
+  const alertMessage = validationError.length ? <Alert severity="error">{validationError}</Alert> : ''
+  const loginMessage = loginError.length ? <Alert severity="error">{loginError}</Alert> : ''
+
+  const loginTextField = (
+    <TextField label="Login" variant="standard" required={true} type="text" size="small" {...register('login')} />
+  )
 
   const confirmPasswordTextField = (
     <TextField
@@ -141,6 +191,7 @@ export default function LoginForm({ formType }: { formType: string }) {
           />
           {formType === 'registration' ? confirmPasswordTextField : ''}
           {alertMessage}
+          {loginMessage}
           <Button variant="contained" className={styles.button} type="submit">
             {formType === 'registration' ? 'Sign up' : 'Login'}
           </Button>

@@ -1,11 +1,12 @@
 import React from 'react'
 import TodoFilters from '@/components/TodoFilters'
 import styles from './styles.module.scss'
-import { getLengths } from '@/redux/selectors'
+import { getCurrentUserId, getLengths } from '@/redux/selectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { asyncDeleteCompletedTodos } from '@/redux/actions'
 
 function TodoFooter() {
+  const userId = useSelector(getCurrentUserId) as string
   const lengths = useSelector(getLengths)
   const dispatch = useDispatch()
 
@@ -13,7 +14,7 @@ function TodoFooter() {
   const removeDoneClasses = `${styles['remove-all-done']} ${lengths.completed ? '' : styles.hidden}`
 
   const removeDone = () => {
-    dispatch(asyncDeleteCompletedTodos())
+    dispatch(asyncDeleteCompletedTodos(userId))
   }
 
   return (
