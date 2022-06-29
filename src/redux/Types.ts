@@ -10,7 +10,7 @@ export type UserType = {
   email: string
   roleId: number
   createdAt: string
-}
+} | null
 
 export type ErrorMessage = {
   message: string

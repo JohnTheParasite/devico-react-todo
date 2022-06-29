@@ -13,7 +13,7 @@ import { ErrorMessage, UserType } from '@/redux/Types'
 import { setCurrentUser } from '@/redux/actions'
 
 const schemaReg = yup.object().shape({
-  login: yup.string().required(),
+  login: yup.string(),
   email: yup.string().email().required(),
   password: yup.string().min(4).max(15).required(),
   confirmPassword: yup.string().oneOf([yup.ref('password'), null]),
@@ -53,7 +53,9 @@ export default function LoginForm({ formType }: { formType: string }) {
 
   const onSubmit = (data: IFormInput) => {
     if (formType === 'registration') {
-      registration(data as IFormInputReg)
+      const regData = data as IFormInputReg
+      regData.login = regData.login === '' ? regData.email.split('@')[0] : regData.login
+      registration(regData)
     } else {
       login(data as IFormInputLog)
     }
@@ -112,9 +114,7 @@ export default function LoginForm({ formType }: { formType: string }) {
   const alertMessage = validationError.length ? <Alert severity="error">{validationError}</Alert> : ''
   const loginMessage = loginError.length ? <Alert severity="error">{loginError}</Alert> : ''
 
-  const loginTextField = (
-    <TextField label="Login" variant="standard" required={true} type="text" size="small" {...register('login')} />
-  )
+  const loginTextField = <TextField label="Login" variant="standard" type="text" size="small" {...register('login')} />
 
   const confirmPasswordTextField = (
     <TextField
