@@ -16,4 +16,7 @@ export const getFilteredTodos = (state: RootState) => {
 }
 export const getLengths = (state: RootState) => getTaskListReducer(state).lengths
 
+export const getUsersReducer = (state: RootState) => state.usersReducer
+export const getCurrentUser = (state: RootState) => getUsersReducer(state).currentUser
+
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector

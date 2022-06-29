@@ -32,6 +32,10 @@ class Api {
   deleteCompleted() {
     return this.api.delete('/api/tasks/bulk/delete')
   }
+
+  authorize(email: string, password: string) {
+    return this.api.post('/api/login', { email, password })
+  }
 }
 
 export function catchAxiosError(error: AxiosError) {

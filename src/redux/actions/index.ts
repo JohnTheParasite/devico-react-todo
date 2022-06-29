@@ -1,4 +1,4 @@
-import { TodolistType } from '@/redux/Types'
+import { TodolistType, UserType } from '@/redux/Types'
 
 export const changeTodoContent = (id: number | string, content: string) => {
   return {
@@ -72,5 +72,14 @@ export const asyncToggleAllTodo = (done: boolean) => {
 export const asyncDeleteCompletedTodos = () => {
   return {
     type: 'ASYNC_DELETE_COMPLETED_TODOS',
+  }
+}
+
+export const setCurrentUser = (user: UserType) => {
+  return {
+    type: 'SET_CURRENT_USER',
+    payload: {
+      user,
+    },
   }
 }

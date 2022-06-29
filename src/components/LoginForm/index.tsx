@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './styles.module.scss'
 import logo from '@/images/logo.svg'
 import { Button, TextField, Alert } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useDispatch } from 'react-redux'
 import * as yup from 'yup'
+import Api from '@/services/api'
+import { AxiosResponse, AxiosError } from 'axios'
+import { ErrorMessage, UserType } from '@/redux/Types'
+import { setCurrentUser } from '@/redux/actions'
 
 const schemaReg = yup.object().shape({
   login: yup.string().required(),
@@ -32,7 +37,10 @@ interface IFormInputLog {
 }
 
 export default function LoginForm({ formType }: { formType: string }) {
-  let currentError = ''
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const [currentError, setCurrentError] = useState('')
 
   type IFormInput = IFormInputReg | IFormInputLog
 
@@ -43,7 +51,34 @@ export default function LoginForm({ formType }: { formType: string }) {
   })
 
   const onSubmit = (data: IFormInput) => {
-    console.log(data)
+    const { email, password } = data
+    Api.authorize(email, password)
+      .then((res: AxiosResponse<UserType>) => {
+        if (res.status === 200) {
+          dispatch(setCurrentUser(res.data))
+          navigate('/todos')
+        }
+      })
+      .catch((res: AxiosError<ErrorMessage>) => {
+        console.log(res)
+        console.log(res.response?.data.message)
+        if (res.response?.status === 400) {
+          // alertMessage = res.response?.data.message
+        }
+      })
+  }
+
+  const Validate = () => {
+    console.log('clicked')
+    let errMsg = ''
+    if (formType === 'login') {
+      if ('email' in errors) {
+        errMsg = 'Email must be valid'
+      } else if ('password' in errors) {
+        errMsg = errors.password?.message as string
+      }
+    }
+    setCurrentError(errMsg)
   }
 
   const {
@@ -55,14 +90,6 @@ export default function LoginForm({ formType }: { formType: string }) {
   const loginTextField = (
     <TextField label="Login" variant="standard" required={true} type="text" size="small" {...register('login')} />
   )
-
-  if (formType === 'login') {
-    if ('email' in errors) {
-      currentError = 'Email must be valid'
-    } else if ('password' in errors) {
-      currentError = errors.password?.message as string
-    }
-  }
 
   const alertMessage = currentError.length ? <Alert severity="error">{currentError}</Alert> : ''
 
@@ -141,7 +168,7 @@ export default function LoginForm({ formType }: { formType: string }) {
           />
           {formType === 'registration' ? confirmPasswordTextField : ''}
           {alertMessage}
-          <Button variant="contained" className={styles.button} type="submit">
+          <Button variant="contained" className={styles.button} type="submit" onClick={Validate}>
             {formType === 'registration' ? 'Sign up' : 'Login'}
           </Button>
           {LinkContainer}
