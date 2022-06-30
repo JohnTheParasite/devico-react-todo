@@ -12,6 +12,12 @@ export type UserType = {
   createdAt: string
 } | null
 
+export type UserResponse = {
+  user: UserType
+  accessToken: string
+  refreshToken: string
+}
+
 export type ErrorMessage = {
   message: string
 }

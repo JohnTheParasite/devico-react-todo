@@ -7,6 +7,10 @@ class Api {
     this.api = axios.create({
       baseURL: endpoint,
     })
+
+    // this.api.interceptors.request.use((config) => {
+    //   config.headers?.Authorization
+    // })
   }
 
   getAllTodos(userId: string) {
