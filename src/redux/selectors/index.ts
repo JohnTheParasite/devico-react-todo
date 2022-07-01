@@ -20,4 +20,6 @@ export const getUsersReducer = (state: RootState) => state.usersReducer
 export const getCurrentUser = (state: RootState) => getUsersReducer(state).currentUser
 export const getCurrentUserId = (state: RootState) => getCurrentUser(state)?.id
 
+export const getUserIsPending = (state: RootState) => getUsersReducer(state).isPending
+
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector

@@ -67,6 +67,8 @@ export default function LoginForm({ formType }: { formType: string }) {
       .then((res: AxiosResponse<UserResponse>) => {
         if (res.status === 200) {
           dispatch(setCurrentUser(res.data.user))
+          localStorage.setItem('token', res.data.accessToken)
+          localStorage.setItem('refreshToken', res.data.refreshToken)
           navigate('/todos')
         }
       })
@@ -82,9 +84,11 @@ export default function LoginForm({ formType }: { formType: string }) {
   const registration = (data: IFormInputReg) => {
     const { login, email, password } = data
     Api.register(login, email, password)
-      .then((res: AxiosResponse<UserType>) => {
+      .then((res: AxiosResponse<UserResponse>) => {
         if (res.status === 200) {
-          dispatch(setCurrentUser(res.data))
+          dispatch(setCurrentUser(res.data.user))
+          localStorage.setItem('token', res.data.accessToken)
+          localStorage.setItem('refreshToken', res.data.refreshToken)
           navigate('/todos')
         }
       })

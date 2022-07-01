@@ -2,10 +2,12 @@ import React, { useEffect } from 'react'
 import { Avatar, Tooltip, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import avatar from '@/images/avatar.gif'
 import { useDispatch, useSelector } from 'react-redux'
-import { getCurrentUser } from '@/redux/selectors'
+import { getCurrentUser, getUserIsPending } from '@/redux/selectors'
 import styles from './styles.module.scss'
 import { useNavigate } from 'react-router-dom'
-import { setCurrentUser } from '@/redux/actions'
+import { setCurrentUser, setUserIsPending } from '@/redux/actions'
+import Api from '@/services/api'
+import axios from 'axios'
 
 export default function TopBar() {
   const currentUser = useSelector(getCurrentUser)
@@ -14,11 +16,31 @@ export default function TopBar() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (currentUser === null) {
-      navigate('/')
+    checkAuth()
+  }, [])
+
+  const checkAuth = async () => {
+    const refreshToken = localStorage.getItem('refreshToken') as string
+    if (!refreshToken) {
+      dispatch(setUserIsPending(false))
       return
     }
-  }, [])
+
+    await axios
+      .post('http://localhost:8081/api/refresh', { refreshToken })
+      .then((res) => {
+        localStorage.setItem('token', res.data.accessToken)
+        dispatch(setCurrentUser(res.data.user))
+        navigate('/todos')
+      })
+      .catch((e) => {
+        console.log(e.response?.data?.message)
+        navigate('/')
+      })
+      .finally(() => {
+        dispatch(setUserIsPending(false))
+      })
+  }
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
@@ -28,10 +50,13 @@ export default function TopBar() {
     setAnchorElUser(null)
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    handleCloseUserMenu()
+    await Api.logout(localStorage.getItem('refreshToken') as string)
+    localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
     dispatch(setCurrentUser(null))
     navigate('/')
-    handleCloseUserMenu()
   }
 
   const topBarStyles = `${styles.container} ${currentUser === null ? styles.hidden : ''}`
