@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from 'axios'
+import { setUserIsPending } from '@/redux/actions'
 
 class Api {
   private readonly api: AxiosInstance
@@ -7,6 +8,35 @@ class Api {
     this.api = axios.create({
       baseURL: endpoint,
     })
+
+    this.api.interceptors.request.use((config) => {
+      config.headers = { ...config.headers, Authorization: `Bearer ${localStorage.getItem('token')}` }
+      return config
+    })
+
+    this.api.interceptors.response.use(
+      (config) => {
+        return config
+      },
+      async (error) => {
+        const originalRequest = error.config
+
+        if (error.response.status === 401 && error.config && !error.config._isRetry) {
+          originalRequest._isRetry = true
+          try {
+            const refreshToken = localStorage.getItem('refreshToken') as string
+            if (refreshToken) {
+              const res = await axios.post('http://localhost:8081/api/refresh', { refreshToken })
+              localStorage.setItem('token', res.data.accessToken)
+              return this.api.request(originalRequest)
+            }
+          } catch (e) {
+            console.log(e)
+          }
+          return error
+        }
+      },
+    )
   }
 
   getAllTodos(userId: string) {
@@ -39,6 +69,10 @@ class Api {
 
   register(login: string, email: string, password: string) {
     return this.api.post('/api/users', { login, email, password })
+  }
+
+  logout(refreshToken: string) {
+    return this.api.post('/api/logout', { refreshToken })
   }
 }
 

@@ -1,7 +1,8 @@
 import {
   ActionFormat,
   ActionOptions,
-  AddChangeTodoAction,
+  AddTodoAction,
+  ChangeTodoAction,
   DeleteTodoAction,
   GetTodosAction,
   TodolistType,
@@ -43,7 +44,7 @@ const taskListReducer = (state = initialState, action: ActionFormat<ActionOption
       }
     }
     case 'ADD_TODO': {
-      const addPayload = action.payload as AddChangeTodoAction
+      const addPayload = action.payload as AddTodoAction
       const newList = [...state.todos, { ...addPayload, done: false }]
       return {
         ...state,
@@ -52,7 +53,7 @@ const taskListReducer = (state = initialState, action: ActionFormat<ActionOption
       }
     }
     case 'CHANGE_TODO': {
-      const changePayload = action.payload as AddChangeTodoAction
+      const changePayload = action.payload as ChangeTodoAction
       const newList = [...state.todos]
       const item = newList.find((el) => el.id === changePayload.id)
       if (item) {
@@ -66,7 +67,7 @@ const taskListReducer = (state = initialState, action: ActionFormat<ActionOption
       }
     }
     case 'CHANGE_TODO_CONTENT': {
-      const changePayload = action.payload as AddChangeTodoAction
+      const changePayload = action.payload as ChangeTodoAction
       const newList = [...state.todos]
       const item = newList.find((el) => el.id === changePayload.id)
       if (item) {

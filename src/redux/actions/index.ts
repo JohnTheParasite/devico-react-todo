@@ -91,3 +91,12 @@ export const setCurrentUser = (user: UserType) => {
     },
   }
 }
+
+export const setUserIsPending = (isPending: boolean) => {
+  return {
+    type: 'SET_USER_IS_PENDING',
+    payload: {
+      isPending,
+    },
+  }
+}

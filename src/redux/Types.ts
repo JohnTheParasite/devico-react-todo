@@ -12,6 +12,12 @@ export type UserType = {
   createdAt: string
 } | null
 
+export type UserResponse = {
+  user: UserType
+  accessToken: string
+  refreshToken: string
+}
+
 export type ErrorMessage = {
   message: string
 }
@@ -27,6 +33,7 @@ export type ToggleAllTodosAction = { userId: string; done: boolean }
 export type SetFilterAction = { filter: string }
 export type GetTodosAction = { todos: TodolistType }
 export type SetCurrentUser = { user: UserType }
+export type SetUserIsPending = { isPending: boolean }
 
 export type ActionOptions =
   | GetTodos
