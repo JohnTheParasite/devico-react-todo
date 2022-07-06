@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosInstance } from 'axios'
-import { setUserIsPending } from '@/redux/actions'
 
 class Api {
   private readonly api: AxiosInstance
@@ -33,7 +32,9 @@ class Api {
           } catch (e) {
             console.log(e)
           }
-          return error
+          return Promise.reject(error)
+        } else {
+          return Promise.reject(error)
         }
       },
     )
