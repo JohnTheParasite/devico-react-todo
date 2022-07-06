@@ -1,6 +1,6 @@
 import { put, takeEvery } from 'redux-saga/effects'
 import ApiCall from '@/services/api'
-import { refreshTodos } from '@/redux/actions'
+import { refreshTodos, setSnackbar } from '@/redux/actions'
 import {
   ActionFormat,
   ActionOptions,
@@ -13,6 +13,13 @@ import {
   ToggleAllTodosAction,
 } from '@/redux/Types'
 import { AxiosResponse } from 'axios'
+import {
+  addTodoAlerts,
+  changeTodoAlerts,
+  deleteCompletedTodoAlerts,
+  deleteTodoAlerts,
+  toggleAllTodoAlerts,
+} from '@/constants'
 
 type ActionType = ActionFormat<ActionOptions>
 type AxResponse = AxiosResponse<TodolistType>
@@ -36,8 +43,10 @@ function* AddTodoWorker(action: ActionType) {
   const res: AxResponse = yield ApiCall.addTodo(content, userId)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
+    yield put(setSnackbar(true, addTodoAlerts.success.type, addTodoAlerts.success.message))
   } else {
     yield put(refreshTodos([]))
+    yield put(setSnackbar(true, addTodoAlerts.error.type, addTodoAlerts.error.message))
   }
 }
 
@@ -50,8 +59,10 @@ function* ChangeTodoWorker(action: ActionType) {
   const res: AxResponse = yield ApiCall.changeTodo(id, done, content)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
+    yield put(setSnackbar(true, changeTodoAlerts.success.type, changeTodoAlerts.success.message))
   } else {
     yield put(refreshTodos([]))
+    yield put(setSnackbar(true, changeTodoAlerts.error.type, changeTodoAlerts.error.message))
   }
 }
 
@@ -64,8 +75,10 @@ function* DeleteTodoWorker(action: ActionType) {
   const res: AxResponse = yield ApiCall.deleteTodo(id)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
+    yield put(setSnackbar(true, deleteTodoAlerts.success.type, deleteTodoAlerts.success.message))
   } else {
     yield put(refreshTodos([]))
+    yield put(setSnackbar(true, deleteTodoAlerts.error.type, deleteTodoAlerts.error.message))
   }
 }
 
@@ -78,8 +91,10 @@ function* ToggleAllTodosWorker(action: ActionType) {
   const res: AxResponse = yield ApiCall.toggleAll(userId, done)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
+    yield put(setSnackbar(true, toggleAllTodoAlerts.success.type, toggleAllTodoAlerts.success.message))
   } else {
     yield put(refreshTodos([]))
+    yield put(setSnackbar(true, toggleAllTodoAlerts.error.type, toggleAllTodoAlerts.error.message))
   }
 }
 
@@ -92,8 +107,10 @@ function* DeleteCompletedTodosWorker(action: ActionType) {
   const res: AxResponse = yield ApiCall.deleteCompleted(userId)
   if (res && res.data.length) {
     yield put(refreshTodos(res.data))
+    yield put(setSnackbar(true, deleteCompletedTodoAlerts.success.type, deleteCompletedTodoAlerts.success.message))
   } else {
     yield put(refreshTodos([]))
+    yield put(setSnackbar(true, deleteCompletedTodoAlerts.error.type, deleteCompletedTodoAlerts.error.message))
   }
 }
 
