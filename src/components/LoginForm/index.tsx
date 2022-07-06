@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux'
 import * as yup from 'yup'
 import Api from '@/services/api'
 import { AxiosResponse, AxiosError } from 'axios'
-import { ErrorMessage, UserResponse, UserType } from '@/redux/Types'
+import { ErrorMessage, UserResponse } from '@/redux/Types'
 import { setCurrentUser } from '@/redux/actions'
 
 const schemaReg = yup.object().shape({
@@ -65,7 +65,7 @@ export default function LoginForm({ formType }: { formType: string }) {
     const { email, password } = data
     Api.authorize(email, password)
       .then((res: AxiosResponse<UserResponse>) => {
-        if (res.status === 200) {
+        if (res?.status === 200) {
           dispatch(setCurrentUser(res.data.user))
           localStorage.setItem('token', res.data.accessToken)
           localStorage.setItem('refreshToken', res.data.refreshToken)
