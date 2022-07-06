@@ -22,4 +22,9 @@ export const getCurrentUserId = (state: RootState) => getCurrentUser(state)?.id
 
 export const getUserIsPending = (state: RootState) => getUsersReducer(state).isPending
 
+export const getSnackbarReducer = (state: RootState) => state.snackbarReducer
+export const getSnackbarOpen = (state: RootState) => getSnackbarReducer(state).snackbarOpen
+export const getSnackbarType = (state: RootState) => getSnackbarReducer(state).snackbarType
+export const getSnackbarMessage = (state: RootState) => getSnackbarReducer(state).snackbarMessage
+
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector

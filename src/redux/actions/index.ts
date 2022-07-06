@@ -1,4 +1,5 @@
 import { TodolistType, UserType } from '@/redux/Types'
+import { AlertColor } from '@mui/material/Alert/Alert'
 
 export const changeTodoContent = (id: number | string, content: string) => {
   return {
@@ -12,6 +13,17 @@ export const setFilter = (filter: string) => {
     type: 'SET_FILTER',
     payload: {
       filter,
+    },
+  }
+}
+
+export const setSnackbar = (open: boolean, type: AlertColor, message: string) => {
+  return {
+    type: 'SET_SNACKBAR',
+    payload: {
+      open,
+      type,
+      message,
     },
   }
 }

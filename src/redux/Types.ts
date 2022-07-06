@@ -1,3 +1,5 @@
+import { AlertColor } from '@mui/material/Alert/Alert'
+
 export type TodolistType = {
   id: number | string
   content: string
@@ -34,6 +36,7 @@ export type SetFilterAction = { filter: string }
 export type GetTodosAction = { todos: TodolistType }
 export type SetCurrentUser = { user: UserType }
 export type SetUserIsPending = { isPending: boolean }
+export type SetSnackbar = { open: boolean; type: AlertColor; message: string }
 
 export type ActionOptions =
   | GetTodos
