@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, TextField, Alert } from '@mui/material'
+import { Button, TextField, Alert, styled } from '@mui/material'
 import { useFormik, Field, FormikProvider } from 'formik'
 import * as yup from 'yup'
 import logo from '@/images/logo.svg'
@@ -9,7 +9,6 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { ErrorMessage, UserResponse } from '@/redux/Types'
 import { setCurrentUser } from '@/redux/actions'
 import { useDispatch } from 'react-redux'
-import styles from '@/components/LoginForm/styles.module.scss'
 
 const schemaRegistration = yup.object().shape({
   login: yup.string(),
@@ -148,41 +147,99 @@ export default function LoginForm({ formType }: { formType: string }) {
 
   const LinkContainer =
     formType === 'registration' ? (
-      <div className={styles['link-container']}>
+      <StyledLinkContainer>
         <div>Already a user?</div>
-        <Link to="/" className={styles.link}>
-          LOGIN
-        </Link>
-      </div>
+        <LinkStyled to="/">LOGIN</LinkStyled>
+      </StyledLinkContainer>
     ) : (
-      <div className={styles['link-container']}>
+      <StyledLinkContainer>
         <div>Need an account?</div>
-        <Link to="/registration" className={styles.link}>
-          SIGN UP
-        </Link>
-      </div>
+        <LinkStyled to="/registration">SIGN UP</LinkStyled>
+      </StyledLinkContainer>
     )
 
   return (
-    <div className={styles.inner}>
-      <div className={styles.login}>
-        <div className={styles.logo}>
-          <img src={logo} className={styles['App-logo']} alt="logo" />
-        </div>
+    <InnerBlock>
+      <LoginBlock>
+        <LogoBlock>
+          <AppLogo src={logo} alt="logo" />
+        </LogoBlock>
         <FormikProvider value={formik}>
-          <form onSubmit={formik.handleSubmit}>
+          <StyledForm onSubmit={formik.handleSubmit}>
             {formType === 'registration' ? loginTextField : ''}
             {emailTextField}
             {passwordTextField}
             {formType === 'registration' ? confirmPasswordTextField : ''}
             {loginMessage}
-            <Button variant="contained" color="info" className={styles.button} type="submit">
+            <StyledButton variant="contained" color="info" type="submit">
               {formType === 'registration' ? 'Sign up' : 'Login'}
-            </Button>
+            </StyledButton>
             {LinkContainer}
-          </form>
+          </StyledForm>
         </FormikProvider>
-      </div>
-    </div>
+      </LoginBlock>
+    </InnerBlock>
   )
 }
+
+const InnerBlock = styled('div')`
+  width: 400px;
+  border-radius: 0.428rem;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.1);
+  background-color: white;
+`
+
+const LoginBlock = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 21px;
+  gap: 14px;
+`
+
+const LogoBlock = styled('div')`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  color: rgb(96, 216, 249);
+`
+
+const AppLogo = styled('img')`
+  width: 20%;
+  height: auto;
+  pointer-events: none;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: App-logo-spin infinite 20s linear;
+  }
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`
+
+const StyledLinkContainer = styled('div')`
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  color: grey;
+  font-size: 14px;
+`
+
+const StyledButton = styled(Button)`
+  margin: 15px 0;
+`
+
+const LinkStyled = styled(Link)`
+  color: black;
+`
+
+const StyledForm = styled('form')`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`
