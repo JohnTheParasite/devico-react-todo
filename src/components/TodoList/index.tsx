@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import TodoInput from '@/components/TodoInput'
 import TodoItem from '@/components/TodoItem'
 import TodoFooter from '@/components/TodoFooter'
-import styles from './styles.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   changeTodoContent,
@@ -13,6 +12,7 @@ import {
   asyncToggleAllTodo,
 } from '@/redux/actions'
 import { getCurrentUserId, getFilteredTodos, getLengths, getUserIsPending } from '@/redux/selectors'
+import { styled } from '@mui/material'
 
 function TodoList() {
   const [newInputLabel, setNewInputLabel] = useState('')
@@ -68,17 +68,27 @@ function TodoList() {
   ))
 
   return (
-    <div className={styles['list-container']}>
+    <ListContainer>
       <TodoInput
         inputValue={newInputLabel}
         onNewInputChange={handleChange}
         addItem={addNewItem}
         arrowClick={toggleAllItems}
       />
-      <ul>{listItems}</ul>
+      <StyledList>{listItems}</StyledList>
       <TodoFooter />
-    </div>
+    </ListContainer>
   )
 }
 
 export default TodoList
+
+const ListContainer = styled('div')`
+  background-color: white;
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%), 0 25px 50px 0 rgb(0 0 0 / 10%);
+`
+
+const StyledList = styled('ul')`
+  padding: 0;
+  margin: 0;
+`

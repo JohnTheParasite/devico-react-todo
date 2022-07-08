@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styles from './styles.module.scss'
+import { css, styled } from '@mui/material'
 
 type TodoItemPropsTypes = {
   id: string | number
@@ -57,33 +57,114 @@ function TodoItem({ id, done, content, changeTask, changeContent, removeItem }: 
     removeItem(id)
   }
 
-  const previewClasses = `${styles.preview} ${edit ? styles.hidden : ''}`
-  const editInputClasses = `${styles.edit} ${!edit ? styles.hidden : ''}`
-  const listItemClasses = `${styles['list-item']} ${done ? styles.done : ''}`
-
   return (
-    <li className={listItemClasses}>
-      <div className={previewClasses}>
-        <input type="checkbox" className={styles.checkbox} checked={done} onChange={toggleDone} />
-        <p className={styles.paragraph} onDoubleClick={toggleEdit}>
+    <ListItem>
+      <Preview ishidden={edit ? 1 : 0}>
+        <Checkbox ishidden={edit ? 1 : 0} type="checkbox" checked={done} onChange={toggleDone} />
+        <Paragraph done={done ? 1 : 0} onDoubleClick={toggleEdit}>
           {content}
-        </p>
-        <div className={styles.remove} onClick={removeTodo} role="button" tabIndex={0}>
+        </Paragraph>
+        <Remove className="remove" onClick={removeTodo} role="button" tabIndex={0}>
           ×
-        </div>
-      </div>
+        </Remove>
+      </Preview>
 
-      <input
+      <Edit
+        show={edit ? 0 : 1}
         type="text"
         ref={inputEl}
-        className={editInputClasses}
         value={content}
         onChange={changePropContent}
         onBlur={beforeChangeContent}
         onKeyDown={handleKeyDown}
       />
-    </li>
+    </ListItem>
   )
 }
 
 export default TodoItem
+
+const ListItem = styled('li')`
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  border-bottom: 1px solid #d9d9d9;
+  &:hover {
+    .remove {
+      display: block;
+    }
+  }
+`
+
+const Remove = styled('div')`
+  display: none;
+  cursor: default;
+  color: #cc9a9a;
+  margin-right: 20px;
+  font-size: 30px;
+
+  &:hover {
+    color: #ae5a5d;
+  }
+`
+
+const Preview = styled('div')<{
+  ishidden: number
+}>`
+  align-items: center;
+  width: 100%;
+  display: ${({ ishidden }) => (ishidden ? 'none' : 'flex')};
+`
+
+const Edit = styled('input')<{
+  show: number
+}>`
+  display: ${({ show }) => (show ? 'none' : 'block')};
+  box-sizing: border-box;
+  width: 100%;
+  padding: 11px 16px 11px 9px;
+  font-size: 24px;
+  outline: none;
+  margin-left: 53px;
+`
+
+const Checkbox = styled('input')<{
+  ishidden: number
+}>`
+  appearance: none;
+  display: ${({ ishidden }) => (ishidden ? 'none' : '')};
+
+  &::before {
+    content: '';
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e1edeb;
+    border-radius: 50%;
+  }
+
+  &:checked::before {
+    content: '✓';
+    color: #5cc0ae;
+    border: 1px solid rgba(92, 192, 174, 0.35);
+  }
+`
+
+const donePStyle = css`
+  text-decoration: line-through;
+  color: #d9d9d9;
+  transition: all 0.2s ease;
+`
+
+const Paragraph = styled('p')<{
+  done: number
+}>`
+  ${({ done }) => (done ? donePStyle : '')}
+  cursor: default;
+  margin: 15px 15px;
+  width: 100%;
+`

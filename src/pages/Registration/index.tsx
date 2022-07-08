@@ -1,13 +1,21 @@
 import React from 'react'
 import LoginForm from '@/components/LoginForm'
-import styles from './styles.module.scss'
+import { styled } from '@mui/material'
 
 function Registration() {
   return (
-    <div className={styles.wrapper}>
+    <PageCenteredWrapper>
       <LoginForm formType="registration"></LoginForm>
-    </div>
+    </PageCenteredWrapper>
   )
 }
 
 export default Registration
+
+const PageCenteredWrapper = styled('div')`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+`

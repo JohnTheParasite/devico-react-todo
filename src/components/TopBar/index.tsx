@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
-import { Avatar, Tooltip, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Avatar, Tooltip, IconButton, Menu, MenuItem, Typography, styled } from '@mui/material'
 import avatar from '@/images/avatar.gif'
 import { useDispatch, useSelector } from 'react-redux'
-import { getCurrentUser, getUserIsPending } from '@/redux/selectors'
-import styles from './styles.module.scss'
+import { getCurrentUser } from '@/redux/selectors'
 import { useNavigate } from 'react-router-dom'
 import { setCurrentUser, setUserIsPending } from '@/redux/actions'
 import Api from '@/services/api'
@@ -59,20 +58,19 @@ export default function TopBar() {
     navigate('/')
   }
 
-  const topBarStyles = `${styles.container} ${currentUser === null ? styles.hidden : ''}`
   const role = currentUser?.roleId === 1 ? 'user' : currentUser?.roleId === 2 ? 'admin' : 'super admin'
 
   return (
-    <div className={topBarStyles}>
-      <div className={styles['top-bar']}>
+    <TopBarContainer ishidden={currentUser === null ? 1 : 0}>
+      <TopFlexBar>
         <div></div>
-        <div className={styles.text}>
+        <Text>
           Welcome,
-          <div className={styles.username}>{currentUser?.login}</div>
-          <div className={styles.role}>({role})</div>
+          <TextUsername>{currentUser?.login}</TextUsername>
+          <TextRole>({role})</TextRole>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="avatar" src={avatar} className={styles.avatar} />
+              <StyledAvatar alt="avatar" src={avatar} />
             </IconButton>
           </Tooltip>
           <Menu
@@ -95,8 +93,51 @@ export default function TopBar() {
               <Typography textAlign="center">Logout</Typography>
             </MenuItem>
           </Menu>
-        </div>
-      </div>
-    </div>
+        </Text>
+      </TopFlexBar>
+    </TopBarContainer>
   )
 }
+
+const TopBarContainer = styled('div')<{
+  ishidden: number
+}>`
+  margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 22;
+  display: ${({ ishidden }) => (ishidden ? 'none' : 'block')};
+`
+
+const TopFlexBar = styled('div')`
+  padding: 0.8rem 1rem;
+  background: white;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0.428rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+`
+
+const Text = styled('div')`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+`
+
+const TextUsername = styled('div')`
+  font-weight: bold;
+`
+
+const TextRole = styled('div')`
+  margin-right: 0.6rem;
+`
+
+const StyledAvatar = styled(Avatar)`
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+`
